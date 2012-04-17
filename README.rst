@@ -1,5 +1,5 @@
-*django-screamshot* is a **very naive** implementation of Web page capture
-with `CasperJS <http://casperjs.org>`_ (*aaAAaah!*, `phantoms <http://phantomjs.org>`_:))
+*django-screamshot* is a **very naive** implementation of Web pages capture
+with `CasperJS <http://casperjs.org>`_ (*aaAAaah!*, `phantomjs <http://phantomjs.org>`_:))
 
 (*See the issues pages for more details about what remains to be done.*)
 
@@ -51,6 +51,10 @@ method
 
 data
   HTTP data to be posted (*default:* ``{}``)
+
+
+For example : http://server/capture/?url=http://django-fr.org&selector=h1
+
 
 
 As a template tag
