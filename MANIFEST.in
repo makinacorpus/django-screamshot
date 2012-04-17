@@ -1,2 +1,2 @@
 include README.rst CHANGES LICENSE
-recursive-include *.js
+recursive-include screamshot/scripts *.js

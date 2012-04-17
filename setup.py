@@ -10,9 +10,10 @@ setup(
     version='0.1',
     author='Mathieu Leplatre',
     author_email='mathieu.leplatre@makina-corpus.com',
-    url='',
-    description='',
-    long_description=open(os.path.join(here, 'README.rst')).read(),
+    url='https://github.com/makinacorpus/django-screamshot',
+    description='Web pages capture using Django & CasperJS',
+    long_description=open(os.path.join(here, 'README.rst')).read() + '\n\n' + 
+                     open(os.path.join(here, 'CHANGES')).read(),
     install_requires = ['django'],
     packages=find_packages(),
     classifiers  = ['Natural Language :: English',
