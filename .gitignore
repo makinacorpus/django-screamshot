@@ -1,0 +1,4 @@
+*.pyc
+/build/
+/dist/
+/django_screamshot.egg-info/
