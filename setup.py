@@ -16,6 +16,7 @@ setup(
                      open(os.path.join(here, 'CHANGES')).read(),
     install_requires = ['django'],
     packages=find_packages(),
+    zip_safe=False,
     classifiers  = ['Natural Language :: English',
                     'Operating System :: OS Independent',
                     'Environment :: Web Environment',
