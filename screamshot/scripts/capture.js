@@ -1,5 +1,4 @@
 var casper = require("casper").create({
-    viewportSize: {width: 1400, height: 1200},
     //verbose: true,
     //logLevel: 'debug',
     onError: function(self, m) {   // Any "error" level message will be written
@@ -28,9 +27,12 @@ else {
     var address = casper.cli.args[0],
         output = casper.cli.args[1];
     
-    var method = casper.cli.options.method || 'get',
-      selector = casper.cli.options.selector || 'body',
-          data = casper.cli.options.data || '{}';
+    var method   = casper.cli.options.method || 'get',
+      selector   = casper.cli.options.selector || 'body',
+          data   = casper.cli.options.data || '{}',
+          width  = casper.cli.options.width || 1400,
+          height = casper.cli.options.height || 900;
+    casper.options.viewportSize = {width: width, height: height};
     
     data = JSON.parse(data);
     

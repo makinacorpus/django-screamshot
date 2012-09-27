@@ -32,9 +32,9 @@ def casperjs_command():
         status = subprocess.call([cmd, '--version'])
         assert status == 1
     except OSError:
-        raise ImproperlyConfigured("Casperjs binary cannot be found in PATH")
+        raise ImproperlyConfigured("CasperJS binary cannot be found in PATH (%s)" % sys_path)
     except AssertionError:
-        raise ImproperlyConfigured("Casperjs returned status code %s" % status)
+        raise ImproperlyConfigured("CasperJS returned status code %s" % status)
     # Concatenate with capture script
     app_path = os.path.dirname(__file__)
     capture = os.path.join(app_path, 'scripts', 'capture.js')
@@ -45,7 +45,7 @@ def casperjs_command():
 CASPERJS_CMD = casperjs_command()
 
 
-def casperjs_capture(stream, url, method='get', selector=None, data=None):
+def casperjs_capture(stream, url, method='get', width=None, height=None, selector=None, data=None):
     """
     Captures web pages using ``casperjs``
     """
@@ -56,6 +56,10 @@ def casperjs_capture(stream, url, method='get', selector=None, data=None):
             cmd = CASPERJS_CMD + [url, output]
             # Extra command-line options
             cmd += ['--method=%s' % method]
+            if width:
+                cmd += ['--width=%s' % width]
+            if height:
+                cmd += ['--height=%s' % height]
             if selector:
                 cmd += ['--selector=%s' % selector]
             if data:
