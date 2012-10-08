@@ -98,6 +98,11 @@ root url for reversing (*default is local*) :
 Capture views with authentication
 ---------------------------------
 
+You can use Basic HTTP authentication in your Django project, create a dedicated
+user for screenshots and capture the full URL with credentials (``http://user:password@host/page/``).
+
+Alternatively, you can use a specific view decorator.
+
 Define the authorized IP to capture your pages in your settings :
 
 ::
@@ -117,8 +122,6 @@ And use the provided decorator :
     def your_view(request):
         ...
 
-You got it, I said it was naive :) This means you have to modify your views. 
-It would be nice to make it less *sticky*...
 
 
 Notes about runserver
