@@ -29,8 +29,9 @@ def casperjs_command():
         if os.path.exists(cmd):
             break
     try:
-        status = subprocess.call([cmd, '--version'])
-        assert status == 1
+        proc = subprocess.Popen([cmd, '--version'], stdout=subprocess.PIPE)
+        proc.communicate()
+        assert proc.returncode == 1
     except OSError:
         raise ImproperlyConfigured("CasperJS binary cannot be found in PATH (%s)" % sys_path)
     except AssertionError:
