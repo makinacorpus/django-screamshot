@@ -44,7 +44,12 @@ else {
     });
     
     casper.then(function() {
-        this.captureSelector(output, selector);
+        if (this.exists(selector)) {
+            this.captureSelector(output, selector);
+        }
+        else {
+            this.die("Selector " + selector + "not found in page.", 1);
+        }
     });
     
     casper.run();
