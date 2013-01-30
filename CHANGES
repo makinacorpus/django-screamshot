@@ -5,6 +5,8 @@ CHANGELOG
 0.2.0 (unreleased)
 ==================
 
+* Add ability to add extra command-line arguments
+* Update CasperJS CLI status code
 * Detect forwarded IP address in login decorator
 
 0.1.1 (2012-04-17)

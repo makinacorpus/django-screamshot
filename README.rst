@@ -123,6 +123,19 @@ And use the provided decorator :
         ...
 
 
+Extra-arguments for PhantomJS/CasperJS
+--------------------------------------
+
+You can specify extra-args, such as ``--disk-cache=true`` with the ``CLI_ARGS`` setting :
+
+::
+
+    SCREAMSHOT_CONFIG = {
+        'CLI_ARGS': ['--disk-cache=true', '--max-disk-cache-size=30000']
+    }
+
+See related documentation on PhantomJS and CasperJS homepages.
+
 
 Notes about runserver
 ---------------------

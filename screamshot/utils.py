@@ -28,8 +28,9 @@ def casperjs_command():
         cmd = os.path.join(binpath, 'casperjs')
         if os.path.exists(cmd):
             break
+    cmd = [cmd]
     try:
-        proc = subprocess.Popen([cmd, '--version'], stdout=subprocess.PIPE)
+        proc = subprocess.Popen(cmd + ['--version'], stdout=subprocess.PIPE)
         proc.communicate()
         status = proc.returncode
         assert status == 0
@@ -37,11 +38,15 @@ def casperjs_command():
         raise ImproperlyConfigured("CasperJS binary cannot be found in PATH (%s)" % sys_path)
     except AssertionError:
         raise ImproperlyConfigured("CasperJS returned status code %s" % status)
+
+    # Add extra CLI arguments
+    cmd += app_settings['CLI_ARGS']
+
     # Concatenate with capture script
     app_path = os.path.dirname(__file__)
     capture = os.path.join(app_path, 'scripts', 'capture.js')
     assert os.path.exists(capture), 'Cannot find %s' % capture
-    return [cmd, capture]
+    return cmd + [capture]
 
 
 CASPERJS_CMD = casperjs_command()
