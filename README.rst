@@ -157,6 +157,7 @@ AUTHORS
 =======
 
     * Mathieu Leplatre <mathieu.leplatre@makina-corpus.com>
+    * mozillag
 
 |makinacom|_
 
