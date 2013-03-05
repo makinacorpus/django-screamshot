@@ -26,9 +26,16 @@ def capture(request):
     data = parameters.get('data')
     width = parameters.get('width')
     height = parameters.get('height')
-    width = width if isinstance(width, (int, float)) else None
-    height = height if isinstance(height, (int, float)) else None
-    
+
+    try:
+        width = int(width)
+    except ValueError:
+        width = None
+    try:
+        height = int(height)
+    except ValueError:
+        height = None
+
     try:
         validate = URLValidator()
         validate(url)
