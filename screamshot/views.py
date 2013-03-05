@@ -24,11 +24,16 @@ def capture(request):
     method = parameters.get('method', request.method)
     selector = parameters.get('selector')
     data = parameters.get('data')
-    width = parameters.get('width')
-    height = parameters.get('height')
-    width = width if isinstance(width, (int, float)) else None
-    height = height if isinstance(height, (int, float)) else None
-    
+
+    try:
+        width = int(parameters.get('width', ''))
+    except ValueError:
+        width = None
+    try:
+        height = int(parameters.get('height', ''))
+    except ValueError:
+        height = None
+
     try:
         validate = URLValidator()
         validate(url)
