@@ -24,8 +24,8 @@ def capture(request):
     method = parameters.get('method', request.method)
     selector = parameters.get('selector')
     data = parameters.get('data')
-    width = parameters.get('width')
-    height = parameters.get('height')
+    width = parameters.get('width', '')
+    height = parameters.get('height', '')
 
     try:
         width = int(width)
