@@ -20,7 +20,7 @@ casper.on('http.status.500', pageerror);
 
 
 if (casper.cli.args.length < 2 || casper.cli.args.length > 2) {
-    console.error('Usage: screenshot.js URL FILE [OPTIONS]');
+    console.error('Usage: capture.js URL FILE [OPTIONS]');
     casper.exit();
 }
 else {
