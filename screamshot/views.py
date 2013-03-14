@@ -24,6 +24,16 @@ def capture(request):
     method = parameters.get('method', request.method)
     selector = parameters.get('selector')
     data = parameters.get('data')
+
+    try:
+        width = int(parameters.get('width', ''))
+    except ValueError:
+        width = None
+    try:
+        height = int(parameters.get('height', ''))
+    except ValueError:
+        height = None
+
     try:
         validate = URLValidator()
         validate(url)
@@ -34,5 +44,6 @@ def capture(request):
             raise Http404(_("Cannot reverse URL '%s'") % url)
 
     response = HttpResponse(mimetype='image/png')
-    casperjs_capture(response, url, method=method.lower(), selector=selector, data=data)
+    casperjs_capture(response, url, method=method.lower(), width=width,
+                     height=height, selector=selector, data=data)
     return response

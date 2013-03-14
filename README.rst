@@ -49,11 +49,17 @@ selector
 method
   HTTP method to be used (*default:* ``GET``)
 
+width
+  Viewport width (*default:* ``1400``)
+
+height
+  Viewport height (*default:* ``900``)
+
 data
   HTTP data to be posted (*default:* ``{}``)
 
 
-For example : http://server/capture/?url=http://django-fr.org&selector=h1
+For example : http://server/capture/?url=http://django-fr.org&selector=h1&width=1024&height=768
 
 
 
@@ -151,6 +157,7 @@ AUTHORS
 =======
 
     * Mathieu Leplatre <mathieu.leplatre@makina-corpus.com>
+    * mozillag
 
 |makinacom|_
 
