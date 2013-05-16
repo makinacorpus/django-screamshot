@@ -158,6 +158,7 @@ AUTHORS
 
     * Mathieu Leplatre <mathieu.leplatre@makina-corpus.com>
     * mozillag
+    * dynamicguy
 
 |makinacom|_
 
