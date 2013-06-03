@@ -18,6 +18,19 @@ casper.on('load.failed', pageerror);
 casper.on('http.status.404', pageerror);
 casper.on('http.status.500', pageerror);
 
+function capture(context, selector, output) {
+    if(selector) {
+        if (context.exists(selector)) {
+            context.captureSelector(output, selector);
+        }
+        else {
+            context.die("Selector " + selector + " not found in page.", 1);
+        }
+    } else {
+        context.capture(output);
+    }
+}
+
 
 if (casper.cli.args.length < 2 || casper.cli.args.length > 2) {
     console.error('Usage: capture.js URL FILE [OPTIONS]');
@@ -31,7 +44,8 @@ else {
       selector   = casper.cli.options.selector,
           data   = casper.cli.options.data || '{}',
           width  = casper.cli.options.width || 1400,
-          height = casper.cli.options.height || 900;
+          height = casper.cli.options.height || 900,
+         waitfor = casper.cli.options.waitfor;
     casper.options.viewportSize = {width: width, height: height};
     
     data = JSON.parse(data);
@@ -49,18 +63,15 @@ else {
         document.querySelector('body').setAttribute('class', bodyclass);
     });
 
-    casper.then(function() {
-        if(selector) {
-            if (this.exists(selector)) {
-                this.captureSelector(output, selector);
-            }
-            else {
-                this.die("Selector " + selector + " not found in page.", 1);
-            }
-        } else {
-            this.capture(output);
-        }
-    });
+    if(waitfor) {
+        casper.waitForSelector(waitfor, function() {
+            capture(this, selector, output);
+        });
+    } else {
+        casper.then(function() {
+            capture(this, selector, output);
+        });
+    }
     
     casper.run();
 }

@@ -24,6 +24,7 @@ def capture(request):
     method = parameters.get('method', request.method)
     selector = parameters.get('selector')
     data = parameters.get('data')
+    waitfor = parameters.get('waitfor')
 
     try:
         width = int(parameters.get('width', ''))
@@ -45,5 +46,5 @@ def capture(request):
 
     response = HttpResponse(mimetype='image/png')
     casperjs_capture(response, url, method=method.lower(), width=width,
-                     height=height, selector=selector, data=data)
+                     height=height, selector=selector, data=data, waitfor=waitfor)
     return response
