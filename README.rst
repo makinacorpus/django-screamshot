@@ -61,7 +61,7 @@ data
 
 waitfor
   CSS3 selector. The screenshot will be performed only once this selector is
-  satisfied. Typical usage: if your page contains an heavy javascript processing,
+  satisfied. Typical usage: if your page contains a heavy javascript processing,
   you can add a CSS class on an element when the processing is finished to make
   sure the screenshot will get the page properly rendered.
 
