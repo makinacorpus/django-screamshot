@@ -28,7 +28,7 @@ else {
         output = casper.cli.args[1];
     
     var method   = casper.cli.options.method || 'get',
-      selector   = casper.cli.options.selector || 'body',
+      selector   = casper.cli.options.selector,
           data   = casper.cli.options.data || '{}',
           width  = casper.cli.options.width || 1400,
           height = casper.cli.options.height || 900;
@@ -44,11 +44,15 @@ else {
     });
     
     casper.then(function() {
-        if (this.exists(selector)) {
-            this.captureSelector(output, selector);
-        }
-        else {
-            this.die("Selector " + selector + "not found in page.", 1);
+        if(selector) {
+            if (this.exists(selector)) {
+                this.captureSelector(output, selector);
+            }
+            else {
+                this.die("Selector " + selector + " not found in page.", 1);
+            }
+        } else {
+            this.capture(output);
         }
     });
     
