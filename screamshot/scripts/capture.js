@@ -7,10 +7,6 @@ var casper = require("casper").create({
     },
 });
 
-casper.on('remote.message', function (msg) {
-    casper.log(msg, 'error');
-});
-
 function pageerror(resource) {
     casper.log('Cannot open ' + resource.url, 'error');
 };
