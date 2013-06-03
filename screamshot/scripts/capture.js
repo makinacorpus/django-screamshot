@@ -43,6 +43,12 @@ else {
         data: data
     });
     
+    casper.thenEvaluate(function () {
+        var bodyclass = document.querySelector('body').getAttribute('class');
+        bodyclass = bodyclass + " screamshot";
+        document.querySelector('body').setAttribute('class', bodyclass);
+    });
+
     casper.then(function() {
         if(selector) {
             if (this.exists(selector)) {
