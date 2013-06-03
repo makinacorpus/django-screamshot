@@ -41,10 +41,11 @@ You can then obtain a screenshot using the following GET parameters :
 
 url
   The website URL to capture. This can be a fully qualified URL, or the
-  name of a URL to be reversed in your Django project.
+  name of a URL to be reversed in your Django project. Note: do not forget to
+  encode the url.
 
 selector
-  CSS3 selector (*default:* ``body``)
+  CSS3 selector. It will restrict the screenshot to the selected element.
 
 method
   HTTP method to be used (*default:* ``GET``)
@@ -57,6 +58,16 @@ height
 
 data
   HTTP data to be posted (*default:* ``{}``)
+
+waitfor
+  CSS3 selector. The screenshot will be performed only once this selector is
+  satisfied. Typical usage: if your page contains an heavy javascript processing,
+  you can add a CSS class on an element when the processing is finished to make
+  sure the screenshot will get the page properly rendered.
+
+render
+  If render=html, it will return an HTML page containing the image and where the
+  print diaplo box will be automatically opened.
 
 
 For example : http://server/capture/?url=http://django-fr.org&selector=h1&width=1024&height=768
@@ -100,6 +111,21 @@ root url for reversing (*default is local*) :
         'CAPTURE_ROOT_URL': 'http://127.0.0.1:8001',
     }
 
+Customizing the page rendering
+------------------------------
+
+The CasperJS script appends the `screamshot` CSS class on the `body` element.
+You can easily customize the rendering for printing using this CSS marker in
+your CSS stylesheet:
+
+::
+
+  .screamshot #navigation {
+    display: none;
+  }
+  .screamshot #main {
+    margin: 2em;
+  }
 
 Capture views with authentication
 ---------------------------------
@@ -159,6 +185,7 @@ AUTHORS
     * Mathieu Leplatre <mathieu.leplatre@makina-corpus.com>
     * mozillag
     * dynamicguy
+    * Eric Brehault <eric.brehault@makina-corpus.com>
 
 |makinacom|_
 
