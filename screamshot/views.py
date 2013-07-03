@@ -1,4 +1,6 @@
 import logging
+import base64
+from StringIO import StringIO
 
 from django.http import HttpResponse, HttpResponseForbidden, Http404
 from django.core.exceptions import ValidationError
@@ -24,6 +26,8 @@ def capture(request):
     method = parameters.get('method', request.method)
     selector = parameters.get('selector')
     data = parameters.get('data')
+    waitfor = parameters.get('waitfor')
+    render = parameters.get('render', 'png')
 
     try:
         width = int(parameters.get('width', ''))
@@ -43,7 +47,15 @@ def capture(request):
         except NoReverseMatch:
             raise Http404(_("Cannot reverse URL '%s'") % url)
 
-    response = HttpResponse(mimetype='image/png')
-    casperjs_capture(response, url, method=method.lower(), width=width,
-                     height=height, selector=selector, data=data)
+    stream = StringIO()
+    casperjs_capture(stream, url, method=method.lower(), width=width,
+                     height=height, selector=selector, data=data, waitfor=waitfor)
+    if render == "html":
+        response = HttpResponse(mimetype='text/html')
+        body = """<html><body onload="window.print();"><img src="data:image/jpg;base64,%s"/></body></html>""" % base64.encodestring(stream.getvalue())
+        response.write(body)
+    else:
+        response = HttpResponse(mimetype='image/png')
+        response.write(stream.getvalue())
+
     return response
