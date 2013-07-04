@@ -38,6 +38,24 @@ def capture(request):
     except ValueError:
         height = None
 
+    size_str = parameters.get('size', '0x0')
+    try:
+        img_width_str, img_height_str = size_str.lower().split('x')
+    except ValueError:
+        size = None
+    else:
+        try:
+            img_width = int(img_width_str)
+        except ValueError:
+            img_width = None
+        try:
+            img_height = int(img_height_str)
+        except ValueError:
+            img_height = None
+        size = img_width, img_height
+        if not any(size):
+            size = None
+
     try:
         validate = URLValidator()
         validate(url)
@@ -49,7 +67,8 @@ def capture(request):
 
     stream = StringIO()
     casperjs_capture(stream, url, method=method.lower(), width=width,
-                     height=height, selector=selector, data=data, waitfor=waitfor)
+                     height=height, selector=selector, data=data,
+                     size=size, waitfor=waitfor)
     if render == "html":
         response = HttpResponse(mimetype='text/html')
         body = """<html><body onload="window.print();"><img src="data:image/jpg;base64,%s"/></body></html>""" % base64.encodestring(stream.getvalue())

@@ -52,7 +52,8 @@ def casperjs_command():
 CASPERJS_CMD = casperjs_command()
 
 
-def casperjs_capture(stream, url, method='get', width=None, height=None, selector=None, data=None, waitfor=None):
+def casperjs_capture(stream, url, method='get', width=None, height=None,
+                     selector=None, data=None, size=None, waitfor=None):
     """
     Captures web pages using ``casperjs``
     """
@@ -83,7 +84,17 @@ def casperjs_capture(stream, url, method='get', width=None, height=None, selecto
                 raise CaptureError(';'.join(stdout))
             # From file to stream
             with open(output) as out:
-                stream.write(out.read())
+                if size:
+                    try:
+                        from PIL import Image
+                    except ImportError:
+                        import Image
+
+                    img = Image.open(output)
+                    img.thumbnail(size, Image.ANTIALIAS)
+                    img.save(stream, 'png')
+                else:
+                    stream.write(out.read())
     finally:
         if output:
             os.unlink(output)
