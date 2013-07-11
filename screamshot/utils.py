@@ -89,9 +89,8 @@ def casperjs_capture(stream, url, method='get', width=None, height=None,
                         from PIL import Image
                     except ImportError:
                         import Image
-
                     img = Image.open(output)
-                    img.thumbnail(size, Image.ANTIALIAS)
+                    img = img.resize(size, Image.ANTIALIAS)
                     img.save(stream, 'png')
                 else:
                     stream.write(out.read())

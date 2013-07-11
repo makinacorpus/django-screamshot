@@ -70,10 +70,10 @@ render
   print diaplo box will be automatically opened.
 
 size
-  image size (width x height, e.g: ``1024x768``), need install ``PIL`` or ``Pillow``.
+  resize image (width x height, e.g: ``500x500``), need install ``PIL`` or ``Pillow``.
 
 
-For example : http://server/capture/?url=http://django-fr.org&selector=h1&width=1024&height=768&size=700x700
+For example : http://server/capture/?url=http://django-fr.org&selector=body&width=1024&height=768&size=500x500
 
 
 
