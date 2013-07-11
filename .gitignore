@@ -1,5 +1,6 @@
 .idea
 *.pyc
+*.swp
 /build/
 /dist/
 /django_screamshot.egg-info/

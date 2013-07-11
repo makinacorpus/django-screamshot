@@ -2,7 +2,7 @@ import logging
 import base64
 from StringIO import StringIO
 
-from django.http import HttpResponse, HttpResponseForbidden, Http404
+from django.http import HttpResponse, HttpResponseForbidden, Http404, HttpResponseBadRequest
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.core.urlresolvers import reverse, NoReverseMatch
@@ -14,10 +14,34 @@ from utils import casperjs_capture
 logger = logging.getLogger(__name__)
 
 
+def parse_size(size_raw):
+    try:
+        width_str, height_str = size_raw.lower().split('x')
+    except AttributeError:
+        size = None
+    except ValueError:
+        size = None
+    else:
+        try:
+            width = int(width_str)
+            width = width if width > 0 else None
+        except ValueError:
+            width = None
+        try:
+            height = int(height_str)
+            height = height if height > 0 else None
+        except ValueError:
+            height = None
+        size = width, height
+        if not all(size):
+            size = None
+    return size
+
+
 def capture(request):
     # Merge both QueryDict into dict
-    parameters = dict([(k,v) for k,v in request.GET.items()])
-    parameters.update(dict([(k,v) for k,v in request.POST.items()]))
+    parameters = dict([(k, v) for k, v in request.GET.items()])
+    parameters.update(dict([(k, v) for k, v in request.POST.items()]))
 
     url = parameters.get('url')
     if not url:
@@ -38,6 +62,9 @@ def capture(request):
     except ValueError:
         height = None
 
+    size_raw = parameters.get('size')
+    size = parse_size(size_raw)
+
     try:
         validate = URLValidator()
         validate(url)
@@ -48,8 +75,13 @@ def capture(request):
             raise Http404(_("Cannot reverse URL '%s'") % url)
 
     stream = StringIO()
-    casperjs_capture(stream, url, method=method.lower(), width=width,
-                     height=height, selector=selector, data=data, waitfor=waitfor)
+    try:
+        casperjs_capture(stream, url, method=method.lower(), width=width,
+                         height=height, selector=selector, data=data,
+                         size=size, waitfor=waitfor)
+    except ImportError:
+        return HttpResponseBadRequest(_('Resize not supported'))
+
     if render == "html":
         response = HttpResponse(mimetype='text/html')
         body = """<html><body onload="window.print();"><img src="data:image/jpg;base64,%s"/></body></html>""" % base64.encodestring(stream.getvalue())
