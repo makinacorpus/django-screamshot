@@ -53,7 +53,8 @@ CASPERJS_CMD = casperjs_command()
 
 
 def casperjs_capture(stream, url, method='get', width=None, height=None,
-                     selector=None, data=None, size=None, waitfor=None):
+                     selector=None, data=None, size=None, waitfor=None,
+                     overflow=None):
     """
     Captures web pages using ``casperjs``
     """
@@ -89,9 +90,23 @@ def casperjs_capture(stream, url, method='get', width=None, height=None,
                         from PIL import Image
                     except ImportError:
                         import Image
+
                     img = Image.open(output)
-                    img = img.resize(size, Image.ANTIALIAS)
-                    img.save(stream, 'png')
+                    size_crop = None
+                    if overflow and overflow.lower() == 'hidden':
+                        width_raw, height_raw = size
+                        height_better = int(height_raw * (float(width_raw) /
+                                            width_raw))
+                        if height_raw < height_better:
+                            size_crop = (0, 0, width_raw, height_raw)
+
+                    if size_crop:
+                        size_better = width_raw, height_better
+                        img_better = img.resize(size_better, Image.ANTIALIAS)
+                        img_resized = img_better.crop(size_crop)
+                    else:
+                        img_resized = img.resize(size, Image.ANTIALIAS)
+                    img_resized.save(stream, 'png')
                 else:
                     stream.write(out.read())
     finally:

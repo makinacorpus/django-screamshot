@@ -72,6 +72,8 @@ render
 size
   resize image (width x height, e.g: ``500x500``), need install ``PIL`` or ``Pillow``.
 
+overflow
+  control how to resize image.
 
 For example : http://server/capture/?url=http://django-fr.org&selector=body&width=1024&height=768&size=500x500
 
