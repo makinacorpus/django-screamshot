@@ -108,14 +108,15 @@ def image_postprocess(imagefile, stream, size, crop):
     img = Image.open(imagefile)
     size_crop = None
     if crop and crop.lower() == 'true':
-        width_raw, height_raw = size
-        height_better = int(height_raw * (float(width_raw) /
+        width_raw, height_raw = img.size
+        width, height = size
+        height_better = int(height_raw * (float(width) /
                             width_raw))
-        if height_raw < height_better:
-            size_crop = (0, 0, width_raw, height_raw)
+        if height < height_better:
+            size_crop = (0, 0, width, height)
 
     if size_crop:
-        size_better = width_raw, height_better
+        size_better = width, height_better
         img_better = img.resize(size_better, Image.ANTIALIAS)
         img_resized = img_better.crop(size_crop)
     else:
