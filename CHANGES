@@ -5,9 +5,16 @@ CHANGELOG
 0.2.0 (unreleased)
 ==================
 
-* Add CASPERJS_CMD setting to bypass PATH lookup
-* Add ability to add extra command-line arguments
-* Update CasperJS CLI status code
+* CASPERJS_CMD setting to bypass PATH lookup
+* Query ``size`` parameter to control image size
+* Query ``render`` parameter to control output format
+* Remove ``remote.message`` loging
+* Query ``waitFor`` parameter to control capture timing
+* Inject *screamshot* class on *body* to allow capture styling
+* Use capture instead of captureSelector if no selector provided
+* Query parameters to control viewport size
+* Ability to add extra command-line arguments
+* Updated CasperJS CLI status code
 * Detect forwarded IP address in login decorator
 
 0.1.1 (2012-04-17)
