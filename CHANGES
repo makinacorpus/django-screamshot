@@ -6,6 +6,7 @@ CHANGELOG
 ==================
 
 * CASPERJS_CMD setting to bypass PATH lookup
+* Query ``crop`` parameter to control resize
 * Query ``size`` parameter to control image size
 * Query ``render`` parameter to control output format
 * Remove ``remote.message`` loging
