@@ -55,8 +55,7 @@ CASPERJS_CMD = casperjs_command()
 
 
 def casperjs_capture(stream, url, method='get', width=None, height=None,
-                     selector=None, data=None, size=None, waitfor=None,
-                     overflow=None):
+                     selector=None, data=None, waitfor=None, size=None, overflow=None):
     """
     Captures web pages using ``casperjs``
     """
@@ -85,35 +84,43 @@ def casperjs_capture(stream, url, method='get', width=None, height=None,
                 stdout = map(lambda x: x.split(':', 1)[1]
                              if ':' in x else x, stdout.splitlines())
                 raise CaptureError(';'.join(stdout))
-            # From file to stream
-            with open(output) as out:
-                if size:
-                    try:
-                        from PIL import Image
-                    except ImportError:
-                        import Image
 
-                    img = Image.open(output)
-                    size_crop = None
-                    if overflow and overflow.lower() == 'hidden':
-                        width_raw, height_raw = size
-                        height_better = int(height_raw * (float(width_raw) /
-                                            width_raw))
-                        if height_raw < height_better:
-                            size_crop = (0, 0, width_raw, height_raw)
-
-                    if size_crop:
-                        size_better = width_raw, height_better
-                        img_better = img.resize(size_better, Image.ANTIALIAS)
-                        img_resized = img_better.crop(size_crop)
-                    else:
-                        img_resized = img.resize(size, Image.ANTIALIAS)
-                    img_resized.save(stream, 'png')
-                else:
+            if size is None:
+                # From file to stream
+                with open(output) as out:
                     stream.write(out.read())
+            else:
+                image_postprocess(output, stream, size, overflow)
     finally:
         if output:
             os.unlink(output)
+
+
+def image_postprocess(imagefile, stream, size, overflow):
+    """
+    Resize and crop captured image, and saves to stream.
+    """
+    try:
+        from PIL import Image
+    except ImportError:
+        import Image
+
+    img = Image.open(imagefile)
+    size_crop = None
+    if overflow and overflow.lower() == 'hidden':
+        width_raw, height_raw = size
+        height_better = int(height_raw * (float(width_raw) /
+                            width_raw))
+        if height_raw < height_better:
+            size_crop = (0, 0, width_raw, height_raw)
+
+    if size_crop:
+        size_better = width_raw, height_better
+        img_better = img.resize(size_better, Image.ANTIALIAS)
+        img_resized = img_better.crop(size_crop)
+    else:
+        img_resized = img.resize(size, Image.ANTIALIAS)
+    img_resized.save(stream, 'png')
 
 
 def build_absolute_uri(request, url):

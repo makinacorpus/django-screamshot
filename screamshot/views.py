@@ -79,7 +79,7 @@ def capture(request):
     try:
         casperjs_capture(stream, url, method=method.lower(), width=width,
                          height=height, selector=selector, data=data,
-                         size=size, waitfor=waitfor, overflow)
+                         size=size, waitfor=waitfor, overflow=overflow)
     except ImportError:
         return HttpResponseBadRequest(_('Resize not supported'))
 
