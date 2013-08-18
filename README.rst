@@ -158,10 +158,21 @@ And use the provided decorator :
         ...
 
 
-Extra-arguments for PhantomJS/CasperJS
---------------------------------------
+CasperJS command and CLI arguments
+----------------------------------
 
-You can specify extra-args, such as ``--disk-cache=true`` with the ``CLI_ARGS`` setting :
+By default, we look for thr CasperJS binary in the ``PATH``
+environment variable (like ``which``), but you can bypass this:
+
+::
+
+    SCREAMSHOT_CONFIG = {
+        'CASPERJS_CMD': '/home/you/Downloads/apps/capserjs',
+    }
+
+
+You can also specify PhantomJS/CasperJS extra-args, such as
+ ``--disk-cache=true`` with the ``CLI_ARGS`` setting :
 
 ::
 

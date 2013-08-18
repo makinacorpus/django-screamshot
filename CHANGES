@@ -5,6 +5,7 @@ CHANGELOG
 0.2.0 (unreleased)
 ==================
 
+* Add CASPERJS_CMD setting to bypass PATH lookup
 * Add ability to add extra command-line arguments
 * Update CasperJS CLI status code
 * Detect forwarded IP address in login decorator

@@ -19,15 +19,17 @@ class CaptureError(Exception):
 
 def casperjs_command():
     """
-    Look up for ``casperjs`` in shell PATH and builds the whole capture
-    command.
+    If setting CASPERJS_CMD is not defined, then
+    look up for ``casperjs`` in shell PATH and
+    builds the whole capture command.
     """
-    cmd = None
-    sys_path = os.getenv('PATH', '').split(':')
-    for binpath in sys_path:
-        cmd = os.path.join(binpath, 'casperjs')
-        if os.path.exists(cmd):
-            break
+    cmd = app_settings['CASPERJS_CMD']
+    if cmd is None:
+        sys_path = os.getenv('PATH', '').split(':')
+        for binpath in sys_path:
+            cmd = os.path.join(binpath, 'casperjs')
+            if os.path.exists(cmd):
+                break
     cmd = [cmd]
     try:
         proc = subprocess.Popen(cmd + ['--version'], stdout=subprocess.PIPE)
