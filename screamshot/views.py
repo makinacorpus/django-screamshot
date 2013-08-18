@@ -45,7 +45,7 @@ def capture(request):
 
     url = parameters.get('url')
     if not url:
-        return HttpResponseForbidden()
+        return HttpResponseBadRequest(_('Missing url parameter'))
 
     method = parameters.get('method', request.method)
     selector = parameters.get('selector')
@@ -73,7 +73,8 @@ def capture(request):
         try:
             url = request.build_absolute_uri(reverse(url))
         except NoReverseMatch:
-            raise Http404(_("Cannot reverse URL '%s'") % url)
+            error_msg = _("URL '%s' invalid (could not reverse)") % url
+            return HttpResponseBadRequest(error_msg)
 
     stream = StringIO()
     try:
@@ -81,7 +82,8 @@ def capture(request):
                          height=height, selector=selector, data=data,
                          size=size, waitfor=waitfor, crop=crop)
     except ImportError:
-        return HttpResponseBadRequest(_('Resize not supported'))
+        error_msg = _('Resize not supported (PIL not available)')
+        return HttpResponseBadRequest(error_msg)
 
     if render == "html":
         response = HttpResponse(mimetype='text/html')
