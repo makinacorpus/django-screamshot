@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-0.2.0 (unreleased)
+0.2.0 (2013-08-18)
 ==================
 
 * CASPERJS_CMD setting to bypass PATH lookup
