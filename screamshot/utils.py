@@ -59,40 +59,45 @@ def casperjs_capture(stream, url, method='get', width=None, height=None,
     """
     Captures web pages using ``casperjs``
     """
-    output = None
     try:
-        with NamedTemporaryFile('rwb', suffix='.png', delete=False) as f:
-            output = f.name
-            cmd = CASPERJS_CMD + [url, output]
-            # Extra command-line options
-            cmd += ['--method=%s' % method]
-            if width:
-                cmd += ['--width=%s' % width]
-            if height:
-                cmd += ['--height=%s' % height]
-            if selector:
-                cmd += ['--selector=%s' % selector]
-            if data:
-                cmd += ['--data="%s"' % json.dumps(data)]
-            if waitfor:
-                cmd += ['--waitfor=%s' % waitfor]
-            logger.debug(cmd)
-            # Run CasperJS process
-            proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-            stdout = proc.communicate()[0]
-            if not os.path.exists(output):
-                stdout = map(lambda x: x.split(':', 1)[1]
-                             if ':' in x else x, stdout.splitlines())
-                raise CaptureError(';'.join(stdout))
+        if isinstance(stream, basestring):
+            output = stream
+        else:
+            with NamedTemporaryFile('rwb', suffix='.png', delete=False) as f:
+                output = f.name
 
-            if size is None:
+        cmd = CASPERJS_CMD + [url, output]
+        # Extra command-line options
+        cmd += ['--method=%s' % method]
+        if width:
+            cmd += ['--width=%s' % width]
+        if height:
+            cmd += ['--height=%s' % height]
+        if selector:
+            cmd += ['--selector=%s' % selector]
+        if data:
+            cmd += ['--data="%s"' % json.dumps(data)]
+        if waitfor:
+            cmd += ['--waitfor=%s' % waitfor]
+        logger.debug(cmd)
+        # Run CasperJS process
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+        stdout = proc.communicate()[0]
+        if not os.path.exists(output):
+            stdout = map(lambda x: x.split(':', 1)[1]
+                         if ':' in x else x, stdout.splitlines())
+            raise CaptureError(';'.join(stdout))
+
+        if size is None:
+            if stream != output:
                 # From file to stream
                 with open(output) as out:
                     stream.write(out.read())
-            else:
-                image_postprocess(output, stream, size, crop)
+                stream.flush()
+        else:
+            image_postprocess(output, stream, size, crop)
     finally:
-        if output:
+        if stream != output:
             os.unlink(output)
 
 
@@ -131,9 +136,10 @@ def parse_size(size_raw):
     return size
 
 
-def image_postprocess(imagefile, stream, size, crop):
+def image_postprocess(imagefile, output, size, crop):
     """
-    Resize and crop captured image, and saves to stream.
+    Resize and crop captured image, and saves to output.
+    (can be stream or filename)
     """
     try:
         from PIL import Image
@@ -158,7 +164,8 @@ def image_postprocess(imagefile, stream, size, crop):
         img_resized = img_better.crop(size_crop)
     else:
         img_resized = img.resize(size, Image.ANTIALIAS)
-    img_resized.save(stream, 'png')
+    # Works with either filename or file-like object
+    img_resized.save(output, 'png')
 
 
 def build_absolute_uri(request, url):
