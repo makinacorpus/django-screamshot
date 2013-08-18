@@ -3,6 +3,9 @@ with `CasperJS <http://casperjs.org>`_ (*aaAAaah!*, `phantomjs <http://phantomjs
 
 (*See the issues pages for more details about what remains to be done.*)
 
+Checkout `screamshotter <https://github.com/makinacorpus/django-screamshot/tree/screamshotter>`_,
+the simplest Django project powered by *django-screamshot*.
+
 
 =======
 INSTALL
