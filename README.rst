@@ -1,3 +1,5 @@
+**screamshotter**, the simplest Django project powered *django-screamshot*.
+
 =======
 INSTALL
 =======
