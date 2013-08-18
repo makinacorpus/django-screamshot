@@ -83,10 +83,12 @@ def casperjs_capture(stream, url, method='get', width=None, height=None,
         # Run CasperJS process
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
         stdout = proc.communicate()[0]
-        if not os.path.exists(output):
-            stdout = map(lambda x: x.split(':', 1)[1]
-                         if ':' in x else x, stdout.splitlines())
-            raise CaptureError(';'.join(stdout))
+        stdout = process_casperjs_stdout(stdout)
+        for level, msg in stdout:
+            if level == 'FATAL':
+                raise CaptureError(msg)
+            logger.info(msg)
+            print msg
 
         if size is None:
             if stream != output:
@@ -99,6 +101,16 @@ def casperjs_capture(stream, url, method='get', width=None, height=None,
     finally:
         if stream != output:
             os.unlink(output)
+
+
+def process_casperjs_stdout(stdout):
+    """Parse and digest capture script output.
+    """
+    for line in stdout.splitlines():
+        bits = line.split(':', 1)
+        if len(bits) < 2:
+            bits = 'INFO', bits
+        yield bits
 
 
 def parse_size(size_raw):

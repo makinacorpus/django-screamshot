@@ -8,7 +8,7 @@ from django.core.validators import URLValidator
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.utils.translation import ugettext as _
 
-from utils import casperjs_capture
+from utils import casperjs_capture, CaptureError
 
 
 logger = logging.getLogger(__name__)
@@ -56,6 +56,8 @@ def capture(request):
         casperjs_capture(stream, url, method=method.lower(), width=width,
                          height=height, selector=selector, data=data,
                          size=size, waitfor=waitfor, crop=crop)
+    except CaptureError as e:
+        return HttpResponseBadRequest(e)
     except ImportError:
         error_msg = _('Resize not supported (PIL not available)')
         return HttpResponseBadRequest(error_msg)
