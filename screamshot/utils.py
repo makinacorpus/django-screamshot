@@ -96,6 +96,41 @@ def casperjs_capture(stream, url, method='get', width=None, height=None,
             os.unlink(output)
 
 
+def parse_size(size_raw):
+    """ Parse size URL parameter.
+
+    >>> parse_size((100,None))
+    (100, None)
+    >>> parse_size('300x100')
+    (300, 100)
+    >>> parse_size('300x')
+    (300, None)
+    >>> parse_size('x')
+    None
+    """
+    try:
+        width_str, height_str = size_raw.lower().split('x')
+    except AttributeError:
+        size = None
+    except ValueError:
+        size = None
+    else:
+        try:
+            width = int(width_str)
+            width = width if width > 0 else None
+        except ValueError:
+            width = None
+        try:
+            height = int(height_str)
+            height = height if height > 0 else None
+        except ValueError:
+            height = None
+        size = width, height
+        if not all(size):
+            size = None
+    return size
+
+
 def image_postprocess(imagefile, stream, size, crop):
     """
     Resize and crop captured image, and saves to stream.
@@ -104,6 +139,8 @@ def image_postprocess(imagefile, stream, size, crop):
         from PIL import Image
     except ImportError:
         import Image
+
+    size = parse_size(size)
 
     img = Image.open(imagefile)
     size_crop = None

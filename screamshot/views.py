@@ -14,30 +14,6 @@ from utils import casperjs_capture
 logger = logging.getLogger(__name__)
 
 
-def parse_size(size_raw):
-    try:
-        width_str, height_str = size_raw.lower().split('x')
-    except AttributeError:
-        size = None
-    except ValueError:
-        size = None
-    else:
-        try:
-            width = int(width_str)
-            width = width if width > 0 else None
-        except ValueError:
-            width = None
-        try:
-            height = int(height_str)
-            height = height if height > 0 else None
-        except ValueError:
-            height = None
-        size = width, height
-        if not all(size):
-            size = None
-    return size
-
-
 def capture(request):
     # Merge both QueryDict into dict
     parameters = dict([(k, v) for k, v in request.GET.items()])
@@ -62,9 +38,8 @@ def capture(request):
     except ValueError:
         height = None
 
-    size_raw = parameters.get('size')
+    size = parameters.get('size')
     crop = parameters.get('crop')
-    size = parse_size(size_raw)
 
     try:
         validate = URLValidator()
