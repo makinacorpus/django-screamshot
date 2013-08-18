@@ -55,7 +55,7 @@ CASPERJS_CMD = casperjs_command()
 
 
 def casperjs_capture(stream, url, method='get', width=None, height=None,
-                     selector=None, data=None, waitfor=None, size=None, overflow=None):
+                     selector=None, data=None, waitfor=None, size=None, crop=None):
     """
     Captures web pages using ``casperjs``
     """
@@ -90,13 +90,13 @@ def casperjs_capture(stream, url, method='get', width=None, height=None,
                 with open(output) as out:
                     stream.write(out.read())
             else:
-                image_postprocess(output, stream, size, overflow)
+                image_postprocess(output, stream, size, crop)
     finally:
         if output:
             os.unlink(output)
 
 
-def image_postprocess(imagefile, stream, size, overflow):
+def image_postprocess(imagefile, stream, size, crop):
     """
     Resize and crop captured image, and saves to stream.
     """
@@ -107,7 +107,7 @@ def image_postprocess(imagefile, stream, size, overflow):
 
     img = Image.open(imagefile)
     size_crop = None
-    if overflow and overflow.lower() == 'hidden':
+    if crop and crop.lower() == 'true':
         width_raw, height_raw = size
         height_better = int(height_raw * (float(width_raw) /
                             width_raw))

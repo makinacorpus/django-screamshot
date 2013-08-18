@@ -70,10 +70,10 @@ render
   print diaplo box will be automatically opened.
 
 size
-  resize image (width x height, e.g: ``500x500``), need install ``PIL`` or ``Pillow``.
+  Resize image (width x height, e.g: ``500x500``), need install ``PIL`` or ``Pillow``.
 
-overflow
-  control how to resize image.
+crop
+  If ``true``, then resulting image is cropped to match specified size.
 
 For example : http://server/capture/?url=http://django-fr.org&selector=body&width=1024&height=768&size=500x500
 
