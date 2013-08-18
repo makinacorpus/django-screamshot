@@ -6,6 +6,8 @@ CHANGELOG
 ==================
 
 * Return appropriate HTTP responses on parameter errors (400)
+* Better processing of capture errors, not for remote JS yet. (ref #1)
+* Save temporary file step is specified output for ``casperjs_capture`` is a filepath
 
 
 0.2.0 (2013-08-18)
