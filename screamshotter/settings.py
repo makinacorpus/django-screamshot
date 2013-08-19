@@ -14,5 +14,26 @@ INSTALLED_APPS = (
 DISK_CACHE_SIZE = 50 * 1000
 
 SCREAMSHOT_CONFIG = {
-    'CLI_ARGS': ['--disk-cache=true', '--max-disk-cache-size=%s' % DISK_CACHE_SIZE],
+    'CLI_ARGS': ['--disk-cache=true',
+                 '--max-disk-cache-size=%s' % DISK_CACHE_SIZE],
+}
+
+LOGGING = {
+    'version': 1,
+    'formatters': {
+        'simple': {'format': '%(levelname)s %(asctime)s %(name)s %(message)s'},
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    }
 }
