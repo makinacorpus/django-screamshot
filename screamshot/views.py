@@ -2,13 +2,14 @@ import logging
 import base64
 from StringIO import StringIO
 
-from django.http import HttpResponse, HttpResponseForbidden, Http404, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.utils.translation import ugettext as _
 
-from utils import casperjs_capture, CaptureError
+from utils import casperjs_capture, CaptureError, UnsupportedImageFormat
+from utils import image_mimetype
 
 
 logger = logging.getLogger(__name__)
@@ -27,7 +28,7 @@ def capture(request):
     selector = parameters.get('selector')
     data = parameters.get('data')
     waitfor = parameters.get('waitfor')
-    render = parameters.get('render', 'png')
+    render = parameters.get('render', 'png').lower()
 
     try:
         width = int(parameters.get('width', ''))
@@ -55,19 +56,24 @@ def capture(request):
     try:
         casperjs_capture(stream, url, method=method.lower(), width=width,
                          height=height, selector=selector, data=data,
-                         size=size, waitfor=waitfor, crop=crop)
+                         size=size, waitfor=waitfor, crop=crop, render=render)
     except CaptureError as e:
         return HttpResponseBadRequest(e)
     except ImportError:
         error_msg = _('Resize not supported (PIL not available)')
         return HttpResponseBadRequest(error_msg)
+    except UnsupportedImageFormat:
+        error_msg = _('Unsupported image format: %s' % render)
+        return HttpResponseBadRequest(error_msg)
 
     if render == "html":
         response = HttpResponse(mimetype='text/html')
-        body = """<html><body onload="window.print();"><img src="data:image/jpg;base64,%s"/></body></html>""" % base64.encodestring(stream.getvalue())
+        body = """<html><body onload="window.print();">
+                <img src="data:image/png;base64,%s"/></body></html>
+                """ % base64.encodestring(stream.getvalue())
         response.write(body)
     else:
-        response = HttpResponse(mimetype='image/png')
+        response = HttpResponse(mimetype=image_mimetype(render))
         response.write(stream.getvalue())
 
     return response

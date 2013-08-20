@@ -13,6 +13,10 @@ from . import app_settings
 logger = logging.getLogger(__name__)
 
 
+class UnsupportedImageFormat(Exception):
+    pass
+
+
 class CaptureError(Exception):
     pass
 
@@ -55,7 +59,8 @@ CASPERJS_CMD = casperjs_command()
 
 
 def casperjs_capture(stream, url, method='get', width=None, height=None,
-                     selector=None, data=None, waitfor=None, size=None, crop=None):
+                     selector=None, data=None, waitfor=None, size=None,
+                     crop=None, render='png'):
     """
     Captures web pages using ``casperjs``
     """
@@ -88,16 +93,15 @@ def casperjs_capture(stream, url, method='get', width=None, height=None,
             if level == 'FATAL':
                 raise CaptureError(msg)
             logger.info(msg)
-            print msg
 
-        if size is None:
+        if size is None and render.lower() == 'png':
             if stream != output:
                 # From file to stream
                 with open(output) as out:
                     stream.write(out.read())
                 stream.flush()
         else:
-            image_postprocess(output, stream, size, crop)
+            image_postprocess(output, stream, size, crop, render)
     finally:
         if stream != output:
             os.unlink(output)
@@ -111,6 +115,56 @@ def process_casperjs_stdout(stdout):
         if len(bits) < 2:
             bits = 'INFO', bits
         yield bits
+
+
+def image_mimetype(render):
+    """Return internet media(image) type.
+
+    >>>image_mimetype('jpg')
+    'image/jpeg'
+    >>>image_mimetype('png')
+    'image/png'
+    >>>image_mimetype('xbm')
+    'image/x-xbitmap'
+    """
+    types = {
+        'jpeg': ('jpeg', 'jpg', 'jpe', 'jfif'),
+        'png': ('png', 'html'),
+        'gif': ('gif',),
+        'tiff': ('tiff', 'tif'),
+        'x-xbitmap': ('xbm',)
+    }
+    for k, v in types.iteritems():
+        if render.lower() in v:
+            render = k
+            break
+    return 'image/%s' % render
+
+
+def parse_render(render):
+    """Parse render URL parameter.
+
+    >>> parse_render('html')
+    'png'
+    >>> parse_render('png')
+    'png'
+    >>> parse_render('jpg')
+    'jpeg'
+    >>> parse_render('gif')
+    'gif'
+    """
+    formats = {
+        'jpeg': ('jpeg', 'jpg', 'jpe', 'jfif'),
+        'png': ('png', 'html'),
+        'gif': ('gif',),
+        'tiff': ('tiff', 'tif'),
+        'xbm': ('xbm',)
+    }
+    for k, v in formats.iteritems():
+        if render.lower() in v:
+            render = k
+            break
+    return render
 
 
 def parse_size(size_raw):
@@ -150,7 +204,7 @@ def parse_size(size_raw):
     return size
 
 
-def image_postprocess(imagefile, output, size, crop):
+def image_postprocess(imagefile, output, size, crop, render):
     """
     Resize and crop captured image, and saves to output.
     (can be stream or filename)
@@ -161,6 +215,7 @@ def image_postprocess(imagefile, output, size, crop):
         import Image
 
     size = parse_size(size)
+    render = parse_render(render)
 
     img = Image.open(imagefile)
     size_crop = None
@@ -178,8 +233,12 @@ def image_postprocess(imagefile, output, size, crop):
         img_resized = img_better.crop(size_crop)
     else:
         img_resized = img.resize(size, Image.ANTIALIAS)
-    # Works with either filename or file-like object
-    img_resized.save(output, 'png')
+
+    try:
+        # Works with either filename or file-like object
+        img_resized.save(output, render)
+    except (KeyError, ImportError):
+        raise UnsupportedImageFormat
 
 
 def build_absolute_uri(request, url):
