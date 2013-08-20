@@ -117,11 +117,13 @@ def parse_size(size_raw):
     """ Parse size URL parameter.
 
     >>> parse_size((100,None))
-    (100, None)
+    None
     >>> parse_size('300x100')
     (300, 100)
     >>> parse_size('300x')
-    (300, None)
+    None
+    >>> parse_size('x100')
+    None
     >>> parse_size('x')
     None
     """
@@ -134,13 +136,13 @@ def parse_size(size_raw):
     else:
         try:
             width = int(width_str)
-            width = width if width > 0 else None
-        except ValueError:
+            assert width > 0
+        except (ValueError, AssertionError):
             width = None
         try:
             height = int(height_str)
-            height = height if height > 0 else None
-        except ValueError:
+            assert height > 0
+        except (ValueError, AssertionError):
             height = None
         size = width, height
         if not all(size):
