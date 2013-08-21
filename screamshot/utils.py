@@ -94,14 +94,16 @@ def casperjs_capture(stream, url, method='get', width=None, height=None,
                 raise CaptureError(msg)
             logger.info(msg)
 
-        if size is None and render.lower() == 'png':
+        size = parse_size(size)
+        render = parse_render(render)
+        if size or (render and render != 'png'):
+            image_postprocess(output, stream, size, crop, render)
+        else:
             if stream != output:
                 # From file to stream
                 with open(output) as out:
                     stream.write(out.read())
                 stream.flush()
-        else:
-            image_postprocess(output, stream, size, crop, render)
     finally:
         if stream != output:
             os.unlink(output)
@@ -120,6 +122,8 @@ def process_casperjs_stdout(stdout):
 def image_mimetype(render):
     """Return internet media(image) type.
 
+    >>>image_mimetype(None)
+    'image/png'
     >>>image_mimetype('jpg')
     'image/jpeg'
     >>>image_mimetype('png')
@@ -131,19 +135,26 @@ def image_mimetype(render):
         'jpeg': ('jpeg', 'jpg', 'jpe', 'jfif'),
         'png': ('png', 'html'),
         'gif': ('gif',),
+        'bmp': ('bmp', 'dib'),
         'tiff': ('tiff', 'tif'),
         'x-xbitmap': ('xbm',)
     }
-    for k, v in types.iteritems():
-        if render.lower() in v:
-            render = k
-            break
+    if not render:
+        render = 'png'
+    else:
+        render = render.lower()
+        for k, v in types.iteritems():
+            if render in v:
+                render = k
+                break
     return 'image/%s' % render
 
 
 def parse_render(render):
     """Parse render URL parameter.
 
+    >>> parse_render(None)
+    None
     >>> parse_render('html')
     'png'
     >>> parse_render('png')
@@ -157,13 +168,18 @@ def parse_render(render):
         'jpeg': ('jpeg', 'jpg', 'jpe', 'jfif'),
         'png': ('png', 'html'),
         'gif': ('gif',),
+        'bmp': ('bmp', 'dib'),
         'tiff': ('tiff', 'tif'),
         'xbm': ('xbm',)
     }
-    for k, v in formats.iteritems():
-        if render.lower() in v:
-            render = k
-            break
+    if not render:
+        render = None
+    else:
+        render = render.lower()
+        for k, v in formats.iteritems():
+            if render in v:
+                render = k
+                break
     return render
 
 
@@ -214,12 +230,10 @@ def image_postprocess(imagefile, output, size, crop, render):
     except ImportError:
         import Image
 
-    size = parse_size(size)
-    render = parse_render(render)
-
     img = Image.open(imagefile)
     size_crop = None
-    if crop and crop.lower() == 'true':
+    img_resized = img
+    if size and crop and crop.lower() == 'true':
         width_raw, height_raw = img.size
         width, height = size
         height_better = int(height_raw * (float(width) /
@@ -231,11 +245,13 @@ def image_postprocess(imagefile, output, size, crop, render):
         size_better = width, height_better
         img_better = img.resize(size_better, Image.ANTIALIAS)
         img_resized = img_better.crop(size_crop)
-    else:
+    elif size:
         img_resized = img.resize(size, Image.ANTIALIAS)
 
     try:
         # Works with either filename or file-like object
+        if render == 'bmp':
+            img_resized = img_resized.convert('RGB')
         img_resized.save(output, render)
     except (KeyError, ImportError):
         raise UnsupportedImageFormat
