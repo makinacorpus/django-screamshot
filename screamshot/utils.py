@@ -143,9 +143,9 @@ def parse_render(render):
     """Parse render URL parameter.
 
     >>> parse_render(None)
-    None
+    'png'
     >>> parse_render('html')
-    None
+    'png'
     >>> parse_render('png')
     'png'
     >>> parse_render('jpg')
@@ -162,7 +162,7 @@ def parse_render(render):
         'xbm': guess_all_extensions('image/x-xbitmap')
     }
     if not render:
-        render = None
+        render = 'png'
     else:
         render = render.lower()
         for k, v in formats.iteritems():
@@ -170,7 +170,7 @@ def parse_render(render):
                 render = k
                 break
         else:
-            render = None
+            render = 'png'
     return render
 
 
@@ -240,14 +240,14 @@ def image_postprocess(imagefile, output, size, crop, render):
         elif size:
             img_resized = img.resize(size, Image.ANTIALIAS)
 
-            # If save with 'bmp' use default mode('RGBA'), it will raise:
-            # "IOError: cannot write mode RGBA as BMP".
-            # So, we need convert image mode
-            # from 'RGBA' to 'RGB' for 'bmp' format.
-            if render == 'bmp':
-                img_resized = img_resized.convert('RGB')
-            # Works with either filename or file-like object
-            img_resized.save(output, render)
+        # If save with 'bmp' use default mode('RGBA'), it will raise:
+        # "IOError: cannot write mode RGBA as BMP".
+        # So, we need convert image mode
+        # from 'RGBA' to 'RGB' for 'bmp' format.
+        if render == 'bmp':
+            img_resized = img_resized.convert('RGB')
+        # Works with either filename or file-like object
+        img_resized.save(output, render)
     except (KeyError, ImportError, IOError):
         raise UnsupportedImageFormat
 
