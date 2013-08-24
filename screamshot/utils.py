@@ -132,10 +132,7 @@ def image_mimetype(render):
     >>>image_mimetype('xbm')
     'image/x-xbitmap'
     """
-    if not render:
-        render = 'png'
-    else:
-        render = render.lower()
+    render = parse_render(render)
     return guess_type('foo.%s' % render)[0]
 
 
