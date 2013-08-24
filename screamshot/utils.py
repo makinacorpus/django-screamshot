@@ -4,7 +4,7 @@ import subprocess
 from tempfile import NamedTemporaryFile
 import json
 from urlparse import urljoin
-from mimetypes import guess_type
+from mimetypes import guess_type, guess_all_extensions
 
 from django.core.exceptions import ImproperlyConfigured
 
@@ -145,7 +145,7 @@ def parse_render(render):
     >>> parse_render(None)
     None
     >>> parse_render('html')
-    'png'
+    None
     >>> parse_render('png')
     'png'
     >>> parse_render('jpg')
@@ -154,21 +154,23 @@ def parse_render(render):
     'gif'
     """
     formats = {
-        'jpeg': ('jpeg', 'jpg', 'jpe', 'jfif'),
-        'png': ('png', 'html'),
-        'gif': ('gif',),
-        'bmp': ('bmp', 'dib'),
-        'tiff': ('tiff', 'tif'),
-        'xbm': ('xbm',)
+        'jpeg': guess_all_extensions('image/jpeg'),
+        'png': guess_all_extensions('image/png'),
+        'gif': guess_all_extensions('image/gif'),
+        'bmp': guess_all_extensions('image/x-ms-bmp'),
+        'tiff': guess_all_extensions('image/tiff'),
+        'xbm': guess_all_extensions('image/x-xbitmap')
     }
     if not render:
         render = None
     else:
         render = render.lower()
         for k, v in formats.iteritems():
-            if render in v:
+            if '.%s' % render in v:
                 render = k
                 break
+        else:
+            render = None
     return render
 
 
