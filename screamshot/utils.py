@@ -243,6 +243,9 @@ def image_postprocess(imagefile, output, size, crop, render):
         # from 'RGBA' to 'RGB' for 'bmp' format.
         if render == 'bmp':
             img_resized = img_resized.convert('RGB')
+        # Fix IOError: cannot write mode RGBA as XBM
+        elif render == 'xbm':
+            img_resized = img_resized.convert('1')
         # Works with either filename or file-like object
         img_resized.save(output, render)
     except (KeyError, ImportError, IOError):
