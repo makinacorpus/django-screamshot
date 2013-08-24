@@ -241,22 +241,23 @@ def image_postprocess(imagefile, output, size, crop, render):
         if height < height_better:
             size_crop = (0, 0, width, height)
 
-    if size_crop:
-        size_better = width, height_better
-        img_better = img.resize(size_better, Image.ANTIALIAS)
-        img_resized = img_better.crop(size_crop)
-    elif size:
-        img_resized = img.resize(size, Image.ANTIALIAS)
-
     try:
-        # If save with 'bmp' use default mode('RGBA'), it will raise:
-        # "IOError: cannot write mode RGBA as BMP"
-        # So, we need convert image mode from 'RGBA' to 'RGB' for 'bmp' format.
-        if render == 'bmp':
-            img_resized = img_resized.convert('RGB')
-        # Works with either filename or file-like object
-        img_resized.save(output, render)
-    except (KeyError, ImportError):
+        if size_crop:
+            size_better = width, height_better
+            img_better = img.resize(size_better, Image.ANTIALIAS)
+            img_resized = img_better.crop(size_crop)
+        elif size:
+            img_resized = img.resize(size, Image.ANTIALIAS)
+
+            # If save with 'bmp' use default mode('RGBA'), it will raise:
+            # "IOError: cannot write mode RGBA as BMP".
+            # So, we need convert image mode
+            # from 'RGBA' to 'RGB' for 'bmp' format.
+            if render == 'bmp':
+                img_resized = img_resized.convert('RGB')
+            # Works with either filename or file-like object
+            img_resized.save(output, render)
+    except (KeyError, ImportError, IOError):
         raise UnsupportedImageFormat
 
 
