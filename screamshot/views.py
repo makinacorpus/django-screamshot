@@ -28,7 +28,7 @@ def capture(request):
     selector = parameters.get('selector')
     data = parameters.get('data')
     waitfor = parameters.get('waitfor')
-    render = parameters.get('render', 'png').lower()
+    render = parameters.get('render', 'png')
 
     try:
         width = int(parameters.get('width', ''))
