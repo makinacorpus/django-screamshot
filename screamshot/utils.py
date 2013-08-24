@@ -4,6 +4,7 @@ import subprocess
 from tempfile import NamedTemporaryFile
 import json
 from urlparse import urljoin
+from mimetypes import guess_type
 
 from django.core.exceptions import ImproperlyConfigured
 
@@ -131,23 +132,11 @@ def image_mimetype(render):
     >>>image_mimetype('xbm')
     'image/x-xbitmap'
     """
-    types = {
-        'jpeg': ('jpeg', 'jpg', 'jpe', 'jfif'),
-        'png': ('png', 'html'),
-        'gif': ('gif',),
-        'bmp': ('bmp', 'dib'),
-        'tiff': ('tiff', 'tif'),
-        'x-xbitmap': ('xbm',)
-    }
     if not render:
         render = 'png'
     else:
         render = render.lower()
-        for k, v in types.iteritems():
-            if render in v:
-                render = k
-                break
-    return 'image/%s' % render
+    return guess_type('foo.%s' % render)[0]
 
 
 def parse_render(render):
