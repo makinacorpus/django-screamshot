@@ -133,6 +133,9 @@ def image_mimetype(render):
     'image/x-xbitmap'
     """
     render = parse_render(render)
+    # All most web browsers don't support 'image/x-ms-bmp'.
+    if render == 'bmp':
+        return 'image/bmp'
     return guess_type('foo.%s' % render)[0]
 
 
