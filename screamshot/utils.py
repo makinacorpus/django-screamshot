@@ -4,6 +4,7 @@ import subprocess
 from tempfile import NamedTemporaryFile
 import json
 from urlparse import urljoin
+from mimetypes import guess_type, guess_all_extensions
 
 from django.core.exceptions import ImproperlyConfigured
 
@@ -11,6 +12,10 @@ from . import app_settings
 
 
 logger = logging.getLogger(__name__)
+
+
+class UnsupportedImageFormat(Exception):
+    pass
 
 
 class CaptureError(Exception):
@@ -37,9 +42,11 @@ def casperjs_command():
         status = proc.returncode
         assert status == 0
     except OSError:
-        raise ImproperlyConfigured("CasperJS binary cannot be found in PATH (%s)" % sys_path)
+        msg = "CasperJS binary cannot be found in PATH (%s)" % sys_path
+        raise ImproperlyConfigured(msg)
     except AssertionError:
-        raise ImproperlyConfigured("CasperJS returned status code %s" % status)
+        msg = "CasperJS returned status code %s" % status
+        raise ImproperlyConfigured(msg)
 
     # Add extra CLI arguments
     cmd += app_settings['CLI_ARGS']
@@ -55,7 +62,8 @@ CASPERJS_CMD = casperjs_command()
 
 
 def casperjs_capture(stream, url, method='get', width=None, height=None,
-                     selector=None, data=None, waitfor=None, size=None, crop=None):
+                     selector=None, data=None, waitfor=None, size=None,
+                     crop=None, render='png'):
     """
     Captures web pages using ``casperjs``
     """
@@ -88,16 +96,17 @@ def casperjs_capture(stream, url, method='get', width=None, height=None,
             if level == 'FATAL':
                 raise CaptureError(msg)
             logger.info(msg)
-            print msg
 
-        if size is None:
+        size = parse_size(size)
+        render = parse_render(render)
+        if size or (render and render != 'png'):
+            image_postprocess(output, stream, size, crop, render)
+        else:
             if stream != output:
                 # From file to stream
                 with open(output) as out:
                     stream.write(out.read())
                 stream.flush()
-        else:
-            image_postprocess(output, stream, size, crop)
     finally:
         if stream != output:
             os.unlink(output)
@@ -111,6 +120,60 @@ def process_casperjs_stdout(stdout):
         if len(bits) < 2:
             bits = 'INFO', bits
         yield bits
+
+
+def image_mimetype(render):
+    """Return internet media(image) type.
+
+    >>>image_mimetype(None)
+    'image/png'
+    >>>image_mimetype('jpg')
+    'image/jpeg'
+    >>>image_mimetype('png')
+    'image/png'
+    >>>image_mimetype('xbm')
+    'image/x-xbitmap'
+    """
+    render = parse_render(render)
+    # All most web browsers don't support 'image/x-ms-bmp'.
+    if render == 'bmp':
+        return 'image/bmp'
+    return guess_type('foo.%s' % render)[0]
+
+
+def parse_render(render):
+    """Parse render URL parameter.
+
+    >>> parse_render(None)
+    'png'
+    >>> parse_render('html')
+    'png'
+    >>> parse_render('png')
+    'png'
+    >>> parse_render('jpg')
+    'jpeg'
+    >>> parse_render('gif')
+    'gif'
+    """
+    formats = {
+        'jpeg': guess_all_extensions('image/jpeg'),
+        'png': guess_all_extensions('image/png'),
+        'gif': guess_all_extensions('image/gif'),
+        'bmp': guess_all_extensions('image/x-ms-bmp'),
+        'tiff': guess_all_extensions('image/tiff'),
+        'xbm': guess_all_extensions('image/x-xbitmap')
+    }
+    if not render:
+        render = 'png'
+    else:
+        render = render.lower()
+        for k, v in formats.iteritems():
+            if '.%s' % render in v:
+                render = k
+                break
+        else:
+            render = 'png'
+    return render
 
 
 def parse_size(size_raw):
@@ -150,7 +213,7 @@ def parse_size(size_raw):
     return size
 
 
-def image_postprocess(imagefile, output, size, crop):
+def image_postprocess(imagefile, output, size, crop, render):
     """
     Resize and crop captured image, and saves to output.
     (can be stream or filename)
@@ -160,11 +223,10 @@ def image_postprocess(imagefile, output, size, crop):
     except ImportError:
         import Image
 
-    size = parse_size(size)
-
     img = Image.open(imagefile)
     size_crop = None
-    if crop and crop.lower() == 'true':
+    img_resized = img
+    if size and crop and crop.lower() == 'true':
         width_raw, height_raw = img.size
         width, height = size
         height_better = int(height_raw * (float(width) /
@@ -172,14 +234,29 @@ def image_postprocess(imagefile, output, size, crop):
         if height < height_better:
             size_crop = (0, 0, width, height)
 
-    if size_crop:
-        size_better = width, height_better
-        img_better = img.resize(size_better, Image.ANTIALIAS)
-        img_resized = img_better.crop(size_crop)
-    else:
-        img_resized = img.resize(size, Image.ANTIALIAS)
-    # Works with either filename or file-like object
-    img_resized.save(output, 'png')
+    try:
+        if size_crop:
+            size_better = width, height_better
+            img_better = img.resize(size_better, Image.ANTIALIAS)
+            img_resized = img_better.crop(size_crop)
+        elif size:
+            img_resized = img.resize(size, Image.ANTIALIAS)
+
+        # If save with 'bmp' use default mode('RGBA'), it will raise:
+        # "IOError: cannot write mode RGBA as BMP".
+        # So, we need convert image mode
+        # from 'RGBA' to 'RGB' for 'bmp' format.
+        if render == 'bmp':
+            img_resized = img_resized.convert('RGB')
+        # Fix IOError: cannot write mode RGBA as XBM
+        elif render == 'xbm':
+            img_resized = img_resized.convert('1')
+        # Works with either filename or file-like object
+        img_resized.save(output, render)
+    except KeyError:
+        raise UnsupportedImageFormat
+    except IOError as e:
+        raise CaptureError(e)
 
 
 def build_absolute_uri(request, url):
