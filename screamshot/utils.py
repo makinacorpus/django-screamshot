@@ -42,9 +42,11 @@ def casperjs_command():
         status = proc.returncode
         assert status == 0
     except OSError:
-        raise ImproperlyConfigured("CasperJS binary cannot be found in PATH (%s)" % sys_path)
+        msg = "CasperJS binary cannot be found in PATH (%s)" % sys_path
+        raise ImproperlyConfigured(msg)
     except AssertionError:
-        raise ImproperlyConfigured("CasperJS returned status code %s" % status)
+        msg = "CasperJS returned status code %s" % status
+        raise ImproperlyConfigured(msg)
 
     # Add extra CLI arguments
     cmd += app_settings['CLI_ARGS']
