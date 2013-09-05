@@ -8,6 +8,8 @@ CHANGELOG
 * Return appropriate HTTP responses on parameter errors (400)
 * Better processing of capture errors, not for remote JS yet. (ref #1)
 * Save temporary file step is specified output for ``casperjs_capture`` is a filepath
+* Add a *screamshotter* orphan branch, as a demo Django project
+* Ability to control image format (other than ``png`` or ``html``)
 
 
 0.2.0 (2013-08-18)
