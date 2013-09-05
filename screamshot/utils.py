@@ -251,8 +251,10 @@ def image_postprocess(imagefile, output, size, crop, render):
             img_resized = img_resized.convert('1')
         # Works with either filename or file-like object
         img_resized.save(output, render)
-    except (KeyError, ImportError, IOError):
+    except KeyError:
         raise UnsupportedImageFormat
+    except IOError as e:
+        raise CaptureError(e)
 
 
 def build_absolute_uri(request, url):
