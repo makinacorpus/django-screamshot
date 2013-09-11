@@ -1,11 +1,22 @@
 FROM ubuntu
-MAINTAINER Mathieu Leplatre "contact@mathieu-leplatre.info"
+MAINTAINER Mathieu Leplatre "mathieu.leplatre@makina-corpus.com"
+
+#
+#  Ubuntu
+#...
+RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
 RUN apt-get -qq update
-RUN apt-get install -y build-essential python-dev python-setuptools git-core wget bzip2 unzip 
+RUN apt-get install -y build-essential git-core wget bzip2 unzip gettext
+
+#
+#  Python
+#...
+RUN apt-get install -y python-dev python-setuptools python-virtualenv
 
 #
 #  PhantomJS
 #...
+RUN apt-get install -y libfreetype6 fontconfig
 RUN rm -rf /opt/*phantomjs*/
 RUN wget --quiet http://phantomjs.googlecode.com/files/phantomjs-1.8.1-linux-x86_64.tar.bz2 -O /opt/phantomjs.tar.bz2
 RUN tar -jxvf /opt/phantomjs.tar.bz2 -C /opt/
@@ -24,17 +35,17 @@ RUN ln -sf /opt/*casperjs*/bin/casperjs /usr/bin/
 #
 #  Screamshotter
 #...
-RUN easy_install pip
-RUN pip install virtualenv
-RUN pip install uwsgi
-RUN virtualenv --no-site-packages /opt/ve/screamshotter
 ADD . /opt/apps/screamshotter
-RUN /opt/ve/screamshotter/bin/python /opt/apps/screamshotter/setup.py install
+RUN (cd /opt/apps/screamshotter && git remote rm origin)
+RUN (cd /opt/apps/screamshotter && git remote add origin https://github.com/makinacorpus/django-screamshot.git)
+RUN (cd /opt/apps/screamshotter && make install deploy)
+RUN /opt/apps/screamshotter/bin/pip install Pillow
+
+RUN /opt/apps/screamshotter/bin/pip install uwsgi
+ADD .docker/run.sh /usr/local/bin/run
 
 #
 #  Run !
 #...
-ADD .docker/run.sh /usr/local/bin/screamshotter
 EXPOSE 8000
-RUN echo " IdentityFile ~/.ssh/id_rsa" >> /etc/ssh/ssh_config
-CMD ["/bin/sh", "-e", "/usr/local/bin/screamshotter"]
+CMD ["/bin/sh", "-e", "/usr/local/bin/run"]

@@ -29,6 +29,18 @@ run this server and develop *django-screamshot* at the same time :
     cd django-screamshot/
     python setup.py develop
 
+======
+Docker
+======
+
+You can deploy a Screamshotter instance with in one command using the Docker container :
+
+::
+
+  sudo docker run -p 9999:8000 makinacorpus/screamshotter
+
+Enjoy it at http://localhost:9999 !
+
 
 =====
 USAGE

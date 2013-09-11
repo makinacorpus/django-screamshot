@@ -3,17 +3,21 @@ SECRET_KEY=${SECRET_KEY:-paranoid}
 ALLOWED_HOSTS=${ALLOWED_HOSTS:-*}
 DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-screamshotter.settings}
 
-. /opt/ve/screamshotter/bin/activate
+APP_ROOT=/opt/apps/screamshotter
+BRANCH=screamshotter
+WSGI=screamshotter.wsgi
 
-cd /opt/apps/screamshotter
-git pull origin master
 
-/usr/local/bin/uwsgi \
+
+cd $APP_ROOT
+git pull origin $BRANCH
+
+bin/uwsgi \
     --http-socket 0.0.0.0:8000 \
-    -p 4 \
-    -b 32768 \
-    -T \
+    --processes 4 \
+    --buffer-size 32768 \
+    --enable-threads \
     --master \
     --max-requests 5000 \
-    -H /opt/ve/screamshotter \
-    --module wsgi:application
+    --virtualenv $APP_ROOT \
+    --module $WSGI
