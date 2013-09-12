@@ -1,17 +1,5 @@
-FROM ubuntu
+FROM makinacorpus/pythonbox
 MAINTAINER Mathieu Leplatre "mathieu.leplatre@makina-corpus.com"
-
-#
-#  Ubuntu
-#...
-RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
-RUN apt-get -qq update
-RUN apt-get install -y build-essential git-core wget bzip2 unzip gettext
-
-#
-#  Python
-#...
-RUN apt-get install -y python-dev python-setuptools python-virtualenv
 
 #
 #  PhantomJS
