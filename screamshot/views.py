@@ -44,6 +44,54 @@ def convert_to_int_if_possible(value):
     return converted_value
 
 
+def get_tiling_markup(stream, img_width, img_height,
+                      tiling_width, tiling_height):
+
+    tile_coords = get_tile_coords(img_width, img_height,
+                                  tiling_width, tiling_height)
+
+    body = """
+        <html>
+            <head>
+                <style type="text/css">
+                    .tile {
+                        overflow: hidden;
+                        width:%spx;
+                        height:%spx;
+                        position: relative;
+                        border: 1px solid gray;
+                    }
+                    .page-number {
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                    }
+                    .break {
+                        page-break-before: always;
+                    }
+                </style>
+            </head>
+        <body onload="window.print();">""" % (tiling_width, tiling_height)
+
+    for i, coords in enumerate(tile_coords):
+
+        body += """<div class="tile break">
+                        <img src="data:image/png;base64,%s"
+                        style="position:absolute;
+                               top:-%spx;
+                               left:-%spx;"/>
+                        <div class="page-number"><span>%s/%s</span></div>
+                   </div>""" % (base64.encodestring(stream.getvalue()),
+                                coords[1],
+                                coords[0],
+                                i + 1,
+                                len(tile_coords))
+
+    body += '</body></html>'
+
+    return body
+
+
 def capture(request):
     # Merge both QueryDict into dict
     parameters = dict([(k, v) for k, v in request.GET.items()])
@@ -106,50 +154,11 @@ def capture(request):
         img = Image.open(stream)
         img_width, img_height = img.size
 
+        # We are in tiling mode only if tiling parameters are present
+        # AND img width is bigger than tiling width
         if tiling_width and tiling_height and img_width > tiling_width:
-
-            tile_coords = get_tile_coords(img_width, img_height,
-                                          tiling_width, tiling_height)
-            body = """<html>
-                        <head>
-                            <style type="text/css">
-                                .tile {
-                                    overflow: hidden;
-                                    width:%spx;
-                                    height:%spx;
-                                    position: relative;
-                                    border: 1px solid gray;
-                                }
-                                .page-number {
-                                    position: absolute;
-                                    top: 0;
-                                    right: 0;
-                                }
-                                .break {
-                                    page-break-before: always;
-                                }
-                            </style>
-                        </head>
-                    <body onload="window.print();">""" % (tiling_width,
-                                                          tiling_height)
-
-            for i, coords in enumerate(tile_coords):
-
-                body += """<div class="tile break">
-                <img src="data:image/png;base64,%s"
-                style="position:absolute;
-                       top:-%spx;
-                       left:-%spx;"/>
-                <div class="page-number"><span>%s/%s</span></div>
-                </div>
-                """ % (base64.encodestring(stream.getvalue()),
-                       coords[1],
-                       coords[0],
-                       i + 1,
-                       len(tile_coords))
-
-            body += """</body></html>"""
-
+            body = get_tiling_markup(stream, img_width, img_height,
+                                     tiling_width, tiling_height)
         else:
             body = """<html><body onload="window.print();">
                 <img src="data:image/png;base64,%s"/></body></html>
