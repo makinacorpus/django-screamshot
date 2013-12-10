@@ -78,6 +78,12 @@ size
 crop
   If ``true``, then resulting image is cropped to match specified size.
 
+tiling_width
+  Tile width for large images (Tiling will be performed only if tiling_width AND tiling_height parameters are filled) - page print purpose
+
+tiling_height
+  Tile height for large images (Tiling will be performed only if tiling_width AND tiling_height parameters are filled) - page print purpose
+
 For example : http://server/capture/?url=http://django-fr.org&selector=body&width=1024&height=768&size=500x500
 
 
