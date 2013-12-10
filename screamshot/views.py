@@ -15,6 +15,25 @@ from utils import image_mimetype
 logger = logging.getLogger(__name__)
 
 
+def get_tile_coords(img_width, img_height, tiling_width, tiling_height):
+
+    tile_coords = []
+
+    width_ratio = (img_width - 1) / tiling_width + 1
+
+    processed_height = 0
+
+    while processed_height < img_height:
+
+        for i in range(width_ratio):
+            new_coords = (i * tiling_width, processed_height)
+            tile_coords.append(new_coords)
+
+        processed_height += tiling_height
+
+    return tile_coords
+
+
 def capture(request):
     # Merge both QueryDict into dict
     parameters = dict([(k, v) for k, v in request.GET.items()])
@@ -29,6 +48,8 @@ def capture(request):
     data = parameters.get('data')
     waitfor = parameters.get('waitfor')
     render = parameters.get('render', 'png')
+    tiling_width = parameters.get('tiling_width', None)
+    tiling_height = parameters.get('tiling_height', None)
 
     try:
         width = int(parameters.get('width', ''))
@@ -68,7 +89,61 @@ def capture(request):
 
     if render == "html":
         response = HttpResponse(mimetype='text/html')
-        body = """<html><body onload="window.print();">
+
+        try:
+            from PIL import Image
+        except ImportError:
+            import Image
+
+        # Getting img size
+        stream.seek(0)
+        img = Image.open(stream)
+        img_width, img_height = img.size
+
+        if tiling_width and tiling_height and img_width > tiling_width:
+
+            tile_coords = get_tile_coords(img_width, img_height,
+                                          tiling_width, tiling_height)
+
+            body = """<html>
+                        <head>
+                            <style type="text/css">
+                                .tile {
+                                    overflow: hidden;
+                                    width:%spx;
+                                    height:%spx;
+                                    position: relative;
+                                    border: 1px solid gray;
+                                }
+                                .page-number {
+                                    position: absolute;
+                                    top: 0;
+                                    right: 0;
+                                }
+                            </style>
+                        </head>
+                    <body onload="window.print();>""" % (tiling_width,
+                                                         tiling_height)
+
+            for i, coords in enumerate(tile_coords):
+
+                body += """<div class="tile">
+                <img src="data:image/png;base64,%s"
+                style="position:absolute;
+                       top:-%spx;
+                       left:-%spx;"/>
+                <div class="page-number"><span>%s/%s</span></div>
+                </div>
+                """ % (base64.encodestring(stream.getvalue()),
+                       coords[0],
+                       coords[1],
+                       i + 1,
+                       len(tile_coords))
+
+            body += """</body></html>"""
+
+        else:
+            body = """<html><body onload="window.print();">
                 <img src="data:image/png;base64,%s"/></body></html>
                 """ % base64.encodestring(stream.getvalue())
         response.write(body)
