@@ -34,6 +34,16 @@ def get_tile_coords(img_width, img_height, tiling_width, tiling_height):
     return tile_coords
 
 
+def convert_to_int_if_possible(value):
+
+    try:
+        converted_value = int(value)
+    except ValueError:
+        converted_value = None
+
+    return converted_value
+
+
 def capture(request):
     # Merge both QueryDict into dict
     parameters = dict([(k, v) for k, v in request.GET.items()])
@@ -48,17 +58,13 @@ def capture(request):
     data = parameters.get('data')
     waitfor = parameters.get('waitfor')
     render = parameters.get('render', 'png')
-    tiling_width = parameters.get('tiling_width', None)
-    tiling_height = parameters.get('tiling_height', None)
 
-    try:
-        width = int(parameters.get('width', ''))
-    except ValueError:
-        width = None
-    try:
-        height = int(parameters.get('height', ''))
-    except ValueError:
-        height = None
+    width = convert_to_int_if_possible(parameters.get('width', ''))
+    height = convert_to_int_if_possible(parameters.get('height', ''))
+    tiling_width = convert_to_int_if_possible(
+        parameters.get('tiling_width', None))
+    tiling_height = convert_to_int_if_possible(
+        parameters.get('tiling_height', None))
 
     size = parameters.get('size')
     crop = parameters.get('crop')
@@ -104,7 +110,6 @@ def capture(request):
 
             tile_coords = get_tile_coords(img_width, img_height,
                                           tiling_width, tiling_height)
-
             body = """<html>
                         <head>
                             <style type="text/css">
@@ -120,6 +125,9 @@ def capture(request):
                                     top: 0;
                                     right: 0;
                                 }
+                                .break {
+                                    page-break-before: always;
+                                }
                             </style>
                         </head>
                     <body onload="window.print();">""" % (tiling_width,
@@ -127,7 +135,7 @@ def capture(request):
 
             for i, coords in enumerate(tile_coords):
 
-                body += """<div class="tile">
+                body += """<div class="tile break">
                 <img src="data:image/png;base64,%s"
                 style="position:absolute;
                        top:-%spx;
@@ -135,8 +143,8 @@ def capture(request):
                 <div class="page-number"><span>%s/%s</span></div>
                 </div>
                 """ % (base64.encodestring(stream.getvalue()),
-                       coords[0],
                        coords[1],
+                       coords[0],
                        i + 1,
                        len(tile_coords))
 
