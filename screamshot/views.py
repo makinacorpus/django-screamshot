@@ -110,9 +110,9 @@ def capture(request):
     width = convert_to_int_if_possible(parameters.get('width', ''))
     height = convert_to_int_if_possible(parameters.get('height', ''))
     tiling_width = convert_to_int_if_possible(
-        parameters.get('tiling_width', None))
+        parameters.get('tiling_width', ''))
     tiling_height = convert_to_int_if_possible(
-        parameters.get('tiling_height', None))
+        parameters.get('tiling_height', ''))
 
     size = parameters.get('size')
     crop = parameters.get('crop')
