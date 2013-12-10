@@ -67,7 +67,7 @@ def get_tiling_markup(stream, img_width, img_height,
                         right: 0;
                     }
                     .break {
-                        page-break-before: always;
+                        page-break-after: always;
                     }
                 </style>
             </head>
