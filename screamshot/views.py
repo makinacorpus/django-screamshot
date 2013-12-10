@@ -122,8 +122,8 @@ def capture(request):
                                 }
                             </style>
                         </head>
-                    <body onload="window.print();>""" % (tiling_width,
-                                                         tiling_height)
+                    <body onload="window.print();">""" % (tiling_width,
+                                                          tiling_height)
 
             for i, coords in enumerate(tile_coords):
 
