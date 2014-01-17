@@ -54,9 +54,9 @@ else {
     });
     
     casper.thenEvaluate(function () {
-        var bodyclass = document.querySelector('body').getAttribute('class');
+        var bodyclass = document.querySelector('html').getAttribute('class');
         bodyclass = bodyclass + " screamshot";
-        document.querySelector('body').setAttribute('class', bodyclass);
+        document.querySelector('html').setAttribute('class', bodyclass);
     });
 
     if(waitfor) {
