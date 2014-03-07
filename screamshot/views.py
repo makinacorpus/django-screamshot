@@ -1,16 +1,13 @@
-import logging
 import base64
+import logging
 from StringIO import StringIO
 
+from django.core.urlresolvers import NoReverseMatch
 from django.http import HttpResponse, HttpResponseBadRequest
-from django.core.exceptions import ValidationError
-from django.core.validators import URLValidator
-from django.core.urlresolvers import reverse, NoReverseMatch
 from django.utils.translation import ugettext as _
 
-from utils import casperjs_capture, CaptureError, UnsupportedImageFormat
-from utils import image_mimetype
-
+from utils import (casperjs_capture, CaptureError, UnsupportedImageFormat,
+                   image_mimetype, parse_url)
 
 logger = logging.getLogger(__name__)
 
@@ -23,12 +20,19 @@ def capture(request):
     url = parameters.get('url')
     if not url:
         return HttpResponseBadRequest(_('Missing url parameter'))
+    try:
+        url = parse_url(request, url)
+    except NoReverseMatch:
+        error_msg = _("URL '%s' invalid (could not reverse)") % url
+        return HttpResponseBadRequest(error_msg)
 
     method = parameters.get('method', request.method)
     selector = parameters.get('selector')
     data = parameters.get('data')
     waitfor = parameters.get('waitfor')
     render = parameters.get('render', 'png')
+    size = parameters.get('size')
+    crop = parameters.get('crop')
 
     try:
         width = int(parameters.get('width', ''))
@@ -38,19 +42,6 @@ def capture(request):
         height = int(parameters.get('height', ''))
     except ValueError:
         height = None
-
-    size = parameters.get('size')
-    crop = parameters.get('crop')
-
-    try:
-        validate = URLValidator()
-        validate(url)
-    except ValidationError:
-        try:
-            url = request.build_absolute_uri(reverse(url))
-        except NoReverseMatch:
-            error_msg = _("URL '%s' invalid (could not reverse)") % url
-            return HttpResponseBadRequest(error_msg)
 
     stream = StringIO()
     try:
