@@ -31,7 +31,6 @@ def casperjs_command():
     builds the whole capture command.
     """
     cmd = app_settings['CASPERJS_CMD']
-    # status, sys_path = None
     if cmd is None:
         sys_path = os.getenv('PATH', '').split(':')
         for binpath in sys_path:
@@ -44,8 +43,7 @@ def casperjs_command():
         if phantom_js_cmd:
             kwargs.update({'env': {'PATH': phantom_js_cmd}})
         proc = subprocess.Popen(cmd + ['--version'], **kwargs)
-        proc.wait()
-        out, err = proc.communicate()
+        proc.communicate()
         status = proc.returncode
         assert status == 0
     except OSError:
