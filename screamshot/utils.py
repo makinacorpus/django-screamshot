@@ -41,7 +41,7 @@ def casperjs_command():
     try:
         kwargs = {'stdout': subprocess.PIPE, 'stderr': subprocess.PIPE, 'universal_newlines': True}
         if phantom_js_cmd:
-            kwargs.update({'env': {'PATH': phantom_js_cmd}})
+            kwargs.update({'env': {'PATH': '{0}:{1}'.format(os.getenv('PATH', ''), phantom_js_cmd)}})
         proc = subprocess.Popen(cmd + ['--version'], **kwargs)
         proc.communicate()
         status = proc.returncode
@@ -95,7 +95,7 @@ def casperjs_capture(stream, url, method='get', width=None, height=None,
         logger.debug(cmd)
         kwargs = {'stdout': subprocess.PIPE, 'stderr': subprocess.PIPE, 'universal_newlines': True}
         if phantom_js_cmd:
-            kwargs.update({'env': {'PATH': phantom_js_cmd}})
+            kwargs.update({'env': {'PATH': '{0}:{1}'.format(os.getenv('PATH', ''), phantom_js_cmd)}})
         # Run CasperJS process
         proc = subprocess.Popen(cmd, **kwargs)
         stdout = proc.communicate()[0]
