@@ -6,7 +6,9 @@ import json
 from urlparse import urljoin
 from mimetypes import guess_type, guess_all_extensions
 
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ValidationError
+from django.core.urlresolvers import reverse
+from django.core.validators import URLValidator
 
 from . import app_settings
 
@@ -141,6 +143,21 @@ def image_mimetype(render):
     return guess_type('foo.%s' % render)[0]
 
 
+def parse_url(request, url):
+    """Parse url URL parameter."""
+    try:
+        validate = URLValidator()
+        validate(url)
+    except ValidationError:
+        if url.startswith('/'):
+            host = request.get_host()
+            scheme = 'https' if request.is_secure() else 'http'
+            url = '{scheme}://{host}{uri}'.format(scheme=scheme, host=host, uri=url)
+        else:
+            url = request.build_absolute_uri(reverse(url))
+    return url
+
+
 def parse_render(render):
     """Parse render URL parameter.
 
@@ -229,8 +246,7 @@ def image_postprocess(imagefile, output, size, crop, render):
     if size and crop and crop.lower() == 'true':
         width_raw, height_raw = img.size
         width, height = size
-        height_better = int(height_raw * (float(width) /
-                            width_raw))
+        height_better = int(height_raw * (float(width) / width_raw))
         if height < height_better:
             size_crop = (0, 0, width, height)
 
