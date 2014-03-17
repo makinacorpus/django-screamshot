@@ -15,6 +15,8 @@ from . import app_settings
 
 logger = logging.getLogger(__name__)
 
+phantom_js_cmd = app_settings['PHANTOMJS_CMD']
+
 
 class UnsupportedImageFormat(Exception):
     pass
@@ -22,6 +24,15 @@ class UnsupportedImageFormat(Exception):
 
 class CaptureError(Exception):
     pass
+
+
+def get_command_kwargs():
+    """ will construct kwargs for cmd
+    """
+    kwargs = {'stdout': subprocess.PIPE, 'stderr': subprocess.PIPE, 'universal_newlines': True}
+    if phantom_js_cmd:
+        kwargs.update({'env': {'PATH': '{0}:{1}'.format(os.getenv('PATH', ''), phantom_js_cmd)}})
+    return kwargs
 
 
 def casperjs_command():
@@ -39,7 +50,7 @@ def casperjs_command():
                 break
     cmd = [cmd]
     try:
-        proc = subprocess.Popen(cmd + ['--version'], stdout=subprocess.PIPE)
+        proc = subprocess.Popen(cmd + ['--version'], **get_command_kwargs())
         proc.communicate()
         status = proc.returncode
         assert status == 0
@@ -91,7 +102,7 @@ def casperjs_capture(stream, url, method='get', width=None, height=None,
             cmd += ['--waitfor=%s' % waitfor]
         logger.debug(cmd)
         # Run CasperJS process
-        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+        proc = subprocess.Popen(cmd, **get_command_kwargs())
         stdout = proc.communicate()[0]
         stdout = process_casperjs_stdout(stdout)
         for level, msg in stdout:
@@ -246,7 +257,8 @@ def image_postprocess(imagefile, output, size, crop, render):
     if size and crop and crop.lower() == 'true':
         width_raw, height_raw = img.size
         width, height = size
-        height_better = int(height_raw * (float(width) / width_raw))
+        height_better = int(height_raw * (float(width) /
+                                          width_raw))
         if height < height_better:
             size_crop = (0, 0, width, height)
 
