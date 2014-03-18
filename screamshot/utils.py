@@ -29,9 +29,14 @@ class CaptureError(Exception):
 def get_command_kwargs():
     """ will construct kwargs for cmd
     """
-    kwargs = {'stdout': subprocess.PIPE, 'stderr': subprocess.PIPE, 'universal_newlines': True}
+    kwargs = {
+        'stdout': subprocess.PIPE,
+        'stderr': subprocess.PIPE,
+        'universal_newlines': True
+    }
     if phantom_js_cmd:
-        kwargs.update({'env': {'PATH': '{0}:{1}'.format(os.getenv('PATH', ''), phantom_js_cmd)}})
+        path = '{0}:{1}'.format(os.getenv('PATH', ''), phantom_js_cmd)
+        kwargs.update({'env': {'PATH': path}})
     return kwargs
 
 
@@ -167,7 +172,9 @@ def parse_url(request, url):
         if url.startswith('/'):
             host = request.get_host()
             scheme = 'https' if request.is_secure() else 'http'
-            url = '{scheme}://{host}{uri}'.format(scheme=scheme, host=host, uri=url)
+            url = '{scheme}://{host}{uri}'.format(scheme=scheme,
+                                                  host=host,
+                                                  uri=url)
         else:
             url = request.build_absolute_uri(reverse(url))
     return url
