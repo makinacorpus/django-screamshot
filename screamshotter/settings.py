@@ -28,10 +28,14 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
         },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': os.getenv('LOG_FILE', 'screamshotter.log'),
+        },
     },
     'loggers': {
-        '': {
-            'handlers': ['console'],
+        'screamshot': {
+            'handlers': ['console', 'file'],
             'level': 'INFO',
             'propagate': False,
         },
