@@ -7,10 +7,15 @@ Replace this with more appropriate tests for your application.
 
 from django.test import TestCase
 
+from .utils import process_casperjs_stdout, CaptureError
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+
+class CaptureOutputTest(TestCase):
+    def setUp(self):
+        self.basic = ("INFO: page load\n"
+                      "start capture")
+        self.fatal = ("INFO: page load\n"
+                      "FATAL: Could not find element")
+
+    def test_fatal_error_raise_exception(self):
+        self.assertRaises(CaptureError, process_casperjs_stdout, self.fatal)

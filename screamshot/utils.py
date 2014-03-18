@@ -29,9 +29,14 @@ class CaptureError(Exception):
 def get_command_kwargs():
     """ will construct kwargs for cmd
     """
-    kwargs = {'stdout': subprocess.PIPE, 'stderr': subprocess.PIPE, 'universal_newlines': True}
+    kwargs = {
+        'stdout': subprocess.PIPE,
+        'stderr': subprocess.PIPE,
+        'universal_newlines': True
+    }
     if phantom_js_cmd:
-        kwargs.update({'env': {'PATH': '{0}:{1}'.format(os.getenv('PATH', ''), phantom_js_cmd)}})
+        path = '{0}:{1}'.format(os.getenv('PATH', ''), phantom_js_cmd)
+        kwargs.update({'env': {'PATH': path}})
     return kwargs
 
 
@@ -104,11 +109,7 @@ def casperjs_capture(stream, url, method='get', width=None, height=None,
         # Run CasperJS process
         proc = subprocess.Popen(cmd, **get_command_kwargs())
         stdout = proc.communicate()[0]
-        stdout = process_casperjs_stdout(stdout)
-        for level, msg in stdout:
-            if level == 'FATAL':
-                raise CaptureError(msg)
-            logger.info(msg)
+        process_casperjs_stdout(stdout)
 
         size = parse_size(size)
         render = parse_render(render)
@@ -131,8 +132,16 @@ def process_casperjs_stdout(stdout):
     for line in stdout.splitlines():
         bits = line.split(':', 1)
         if len(bits) < 2:
-            bits = 'INFO', bits
-        yield bits
+            bits = ('INFO', bits)
+        level, msg = bits
+
+        if level == 'FATAL':
+            logger.fatal(msg)
+            raise CaptureError(msg)
+        elif level == 'ERROR':
+            logger.error(msg)
+        else:
+            logger.info(msg)
 
 
 def image_mimetype(render):
@@ -163,7 +172,9 @@ def parse_url(request, url):
         if url.startswith('/'):
             host = request.get_host()
             scheme = 'https' if request.is_secure() else 'http'
-            url = '{scheme}://{host}{uri}'.format(scheme=scheme, host=host, uri=url)
+            url = '{scheme}://{host}{uri}'.format(scheme=scheme,
+                                                  host=host,
+                                                  uri=url)
         else:
             url = request.build_absolute_uri(reverse(url))
     return url

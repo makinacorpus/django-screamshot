@@ -4,5 +4,4 @@ from views import capture
 
 
 urlpatterns = patterns('screamshot.views',
-    url(r'^$', capture, name='capture'),
-)
+                       url(r'^$', capture, name='capture'))
