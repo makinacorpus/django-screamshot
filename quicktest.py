@@ -1,7 +1,9 @@
 import os
 import sys
 import argparse
+
 from django.conf import settings
+
 
 class QuickDjangoTest(object):
     """
@@ -11,7 +13,7 @@ class QuickDjangoTest(object):
 
         >>> QuickDjangoTest('app1', 'app2')
 
-    Based on a script published by Lukasz Dziedzia at: 
+    Based on a script published by Lukasz Dziedzia at:
     http://stackoverflow.com/questions/3841725/how-to-launch-tests-for-django-reusable-app
     """
     DIRNAME = os.path.dirname(__file__)
@@ -41,6 +43,12 @@ class QuickDjangoTest(object):
                     'HOST': '',
                     'PORT': '',
                 }
+            },
+            LOGGING = {
+                'version': 1,
+                'formatters': {'simple': {'format': '%(levelname)s %(asctime)s %(name)s %(message)s'}},
+                'handlers': {'console': {'class': 'logging.StreamHandler', 'formatter': 'simple'}},
+                'loggers': {'screamshot': {'handlers': ['console'], 'level': 'DEBUG'}}
             },
             INSTALLED_APPS = self.INSTALLED_APPS + self.apps
         )
