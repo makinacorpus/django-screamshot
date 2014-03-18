@@ -79,7 +79,7 @@ def casperjs_command():
 CASPERJS_CMD = casperjs_command()
 
 
-def casperjs_capture(stream, url, method='get', width=None, height=None,
+def casperjs_capture(stream, url, method=None, width=None, height=None,
                      selector=None, data=None, waitfor=None, size=None,
                      crop=None, render='png'):
     """
@@ -93,8 +93,10 @@ def casperjs_capture(stream, url, method='get', width=None, height=None,
                 output = f.name
 
         cmd = CASPERJS_CMD + [url, output]
+
         # Extra command-line options
-        cmd += ['--method=%s' % method]
+        if method:
+            cmd += ['--method=%s' % method]
         if width:
             cmd += ['--width=%s' % width]
         if height:

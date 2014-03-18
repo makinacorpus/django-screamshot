@@ -1,29 +1,43 @@
 var casper = require("casper").create({
-    //verbose: true,
-    //logLevel: 'debug',
-    onError: function(self, m) {   // Any "error" level message will be written
-        console.log('FATAL:' + m); // on the console output and PhantomJS will
-        self.exit();               // terminate
-    },
+    colorizerType: 'Dummy',  // no colors
 });
 
-function pageerror(resource) {
-    casper.log('Cannot open ' + resource.url, 'error');
-}
-casper.on('load.failed', pageerror);
-casper.on('http.status.404', pageerror);
-casper.on('http.status.500', pageerror);
 
-function capture(context, selector, output) {
+function on_load_error(resource) {
+    this.echo("ERROR: " + 'Cannot open ' + resource.url, "ERROR");
+}
+casper.on('load.failed', on_load_error);
+casper.on('http.status.404', on_load_error);
+casper.on('http.status.500', on_load_error);
+
+
+casper.on('remote.message', function on_page_message(msg) {
+    this.echo("INFO: " + msg);
+});
+casper.on('page.error', function on_page_error(msg, trace) {
+    this.echo("ERROR: " + msg, "ERROR");
+
+    for(var i=0; i<trace.length; i++) {
+        var step = trace[i];
+        this.echo('ERROR:      ' + step.file + ' (line ' + step.line + ')', "ERROR");
+    }
+});
+casper.on('error', function on_script_error(msg, trace) {
+    this.echo('FATAL: ' + msg, "ERROR");
+    this.exit(1);
+});
+
+
+function capture(selector, output) {
     if(selector) {
-        if (context.exists(selector)) {
-            context.captureSelector(output, selector);
+        if (casper.exists(selector)) {
+            casper.captureSelector(output, selector);
         }
         else {
-            context.die("Selector " + selector + " not found in page.", 1);
+            casper.emit('error', "Selector " + selector + " not found in page.");
         }
     } else {
-        context.capture(output);
+        casper.capture(output);
     }
 }
 
@@ -61,11 +75,11 @@ else {
 
     if (waitfor) {
         casper.waitForSelector(waitfor, function() {
-            capture(this, selector, output);
+            capture(selector, output);
         });
     } else {
         casper.then(function() {
-            capture(this, selector, output);
+            capture(selector, output);
         });
     }
 
