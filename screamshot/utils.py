@@ -104,11 +104,7 @@ def casperjs_capture(stream, url, method='get', width=None, height=None,
         # Run CasperJS process
         proc = subprocess.Popen(cmd, **get_command_kwargs())
         stdout = proc.communicate()[0]
-        stdout = process_casperjs_stdout(stdout)
-        for level, msg in stdout:
-            if level == 'FATAL':
-                raise CaptureError(msg)
-            logger.info(msg)
+        process_casperjs_stdout(stdout)
 
         size = parse_size(size)
         render = parse_render(render)
@@ -131,8 +127,16 @@ def process_casperjs_stdout(stdout):
     for line in stdout.splitlines():
         bits = line.split(':', 1)
         if len(bits) < 2:
-            bits = 'INFO', bits
-        yield bits
+            bits = ('INFO', bits)
+        level, msg = bits
+
+        if level == 'FATAL':
+            logger.fatal(msg)
+            raise CaptureError(msg)
+        elif level == 'ERROR':
+            logger.error(msg)
+        else:
+            logger.info(msg)
 
 
 def image_mimetype(render):
