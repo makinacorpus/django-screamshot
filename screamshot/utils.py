@@ -15,8 +15,6 @@ from . import app_settings
 
 logger = logging.getLogger(__name__)
 
-phantom_js_cmd = app_settings['PHANTOMJS_CMD']
-
 
 class UnsupportedImageFormat(Exception):
     pass
@@ -26,7 +24,7 @@ class CaptureError(Exception):
     pass
 
 
-def get_command_kwargs():
+def casperjs_command_kwargs():
     """ will construct kwargs for cmd
     """
     kwargs = {
@@ -34,6 +32,7 @@ def get_command_kwargs():
         'stderr': subprocess.PIPE,
         'universal_newlines': True
     }
+    phantom_js_cmd = app_settings['PHANTOMJS_CMD']
     if phantom_js_cmd:
         path = '{0}:{1}'.format(os.getenv('PATH', ''), phantom_js_cmd)
         kwargs.update({'env': {'PATH': path}})
@@ -55,7 +54,7 @@ def casperjs_command():
                 break
     cmd = [cmd]
     try:
-        proc = subprocess.Popen(cmd + ['--version'], **get_command_kwargs())
+        proc = subprocess.Popen(cmd + ['--version'], **casperjs_command_kwargs())
         proc.communicate()
         status = proc.returncode
         assert status == 0
@@ -109,7 +108,7 @@ def casperjs_capture(stream, url, method=None, width=None, height=None,
             cmd += ['--waitfor=%s' % waitfor]
         logger.debug(cmd)
         # Run CasperJS process
-        proc = subprocess.Popen(cmd, **get_command_kwargs())
+        proc = subprocess.Popen(cmd, **casperjs_command_kwargs())
         stdout = proc.communicate()[0]
         process_casperjs_stdout(stdout)
 
