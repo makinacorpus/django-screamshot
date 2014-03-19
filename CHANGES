@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-0.3.2 (unreleased)
+0.4.0 (2014-03-19)
 ==================
 
 * If URL not provided, use request's host (by Mozillag)
