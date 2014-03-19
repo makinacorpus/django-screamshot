@@ -5,7 +5,10 @@ CHANGELOG
 0.3.2 (unreleased)
 ==================
 
-- Nothing changed yet.
+* If URL not provided, use request's host (by Mozillag)
+* Allow to provide a custom PhantomJS command (by mo-mughrabi)
+* Improved logging
+* Added some minimalistic unit tests
 
 
 0.3.1 (2014-01-31)
