@@ -24,7 +24,7 @@ SCREENSHOT_FORMAT = (
     ('bmp', 'bmp'),
     ('tiff', 'tiff'),
     ('xbm', 'xbm'),
-    )
+)
 
 
 class OverwriteStorage(FileSystemStorage):
@@ -35,7 +35,7 @@ class OverwriteStorage(FileSystemStorage):
         -> https://djangosnippets.org/snippets/976/
         """
         # If the filename already exists,
-        #remove it as if it was a true file system
+        # remove it as if it was a true file system
         if self.exists(name):
             self.delete(name)
         return name
@@ -161,7 +161,7 @@ class WebPageScreenshot(models.Model):
             self.screenshot.url,
             self.screenshot.name.split('/')[-1],
             self.screenshot.width, self.screenshot.height
-            )
+        )
         return ss_tag
 
     screenshot_tag.short_description = 'Current screenshot'

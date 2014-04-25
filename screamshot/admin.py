@@ -24,6 +24,6 @@ class WebPageScreenshotAdmin(admin.ModelAdmin):
         'method',
         'data',
         'waitfor',
-        ]
+    ]
 
 admin.site.register(WebPageScreenshot, WebPageScreenshotAdmin)
