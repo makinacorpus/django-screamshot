@@ -4,6 +4,7 @@ from hashlib import md5
 
 from tempfile import NamedTemporaryFile
 
+from django.conf import settings
 from django.db import models
 from django.core.files.base import ContentFile
 from django.core.files.storage import FileSystemStorage
@@ -25,6 +26,8 @@ SCREENSHOT_FORMAT = (
     ('tiff', 'tiff'),
     ('xbm', 'xbm'),
 )
+
+SCREAMSHOT_AS_INSTANCE = getattr(settings, 'SCREAMSHOT_AS_INSTANCE', False)
 
 
 class OverwriteStorage(FileSystemStorage):
@@ -107,6 +110,8 @@ class WebPageScreenshot(models.Model):
     objects = WebPageScreenshotManager()
 
     class Meta:
+        if not SCREAMSHOT_AS_INSTANCE:
+            abstract = True
         verbose_name = _("Web page screenshot")
         verbose_name_plural = _("Web pages screenshots")
 

@@ -1,5 +1,9 @@
+from django.conf import settings
 from django.contrib import admin
+
 from .models import WebPageScreenshot
+
+SCREAMSHOT_AS_INSTANCE = getattr(settings, 'SCREAMSHOT_AS_INSTANCE', False)
 
 
 class WebPageScreenshotAdmin(admin.ModelAdmin):
@@ -26,4 +30,5 @@ class WebPageScreenshotAdmin(admin.ModelAdmin):
         'waitfor',
     ]
 
-admin.site.register(WebPageScreenshot, WebPageScreenshotAdmin)
+if SCREAMSHOT_AS_INSTANCE:
+    admin.site.register(WebPageScreenshot, WebPageScreenshotAdmin)
