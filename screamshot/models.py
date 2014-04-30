@@ -110,8 +110,7 @@ class WebPageScreenshot(models.Model):
     objects = WebPageScreenshotManager()
 
     class Meta:
-        if not SCREAMSHOT_AS_INSTANCE:
-            abstract = True
+        abstract = not SCREAMSHOT_AS_INSTANCE
         verbose_name = _("Web page screenshot")
         verbose_name_plural = _("Web pages screenshots")
 
