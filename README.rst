@@ -172,7 +172,7 @@ environment variable (like ``which``), but you can bypass this:
 ::
 
     SCREAMSHOT_CONFIG = {
-        'CASPERJS_CMD': '/home/you/Downloads/apps/capserjs',
+        'CASPERJS_CMD': '/home/you/Downloads/apps/casperjs',
     }
 
 
