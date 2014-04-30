@@ -21,7 +21,7 @@ install:
 
 before_script:
     - "pep8 --ignore=E501 screamshot"
-    - flake8 screamshot
+    - flake8 --ignore=E501 screamshot
 
 script:
     - coverage run quicktest.py screamshot
