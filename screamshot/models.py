@@ -27,7 +27,7 @@ SCREENSHOT_FORMAT = (
     ('xbm', 'xbm'),
 )
 
-SCREAMSHOT_AS_INSTANCE = apps_settings.get['SCREAMSHOT_AS_INSTANCE']
+SCREAMSHOT_AS_INSTANCE = apps_settings['SCREAMSHOT_AS_INSTANCE']
 
 
 class OverwriteStorage(FileSystemStorage):
