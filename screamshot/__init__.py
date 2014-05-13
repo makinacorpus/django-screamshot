@@ -7,4 +7,5 @@ app_settings = dict({
     'CLI_ARGS': [],
     'CASPERJS_CMD': None,
     'PHANTOMJS_CMD': None,
+    'SCREAMSHOT_AS_INSTANCE' : False,
 }, **getattr(settings, 'SCREAMSHOT_CONFIG', {}))

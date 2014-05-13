@@ -1,9 +1,9 @@
-from django.conf import settings
 from django.contrib import admin
 
 from .models import WebPageScreenshot
+from . import app_settings
 
-SCREAMSHOT_AS_INSTANCE = getattr(settings, 'SCREAMSHOT_AS_INSTANCE', False)
+SCREAMSHOT_AS_INSTANCE = app_settings['SCREAMSHOT_AS_INSTANCE']
 
 
 class WebPageScreenshotAdmin(admin.ModelAdmin):

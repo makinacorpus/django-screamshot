@@ -4,7 +4,6 @@ from hashlib import md5
 
 from tempfile import NamedTemporaryFile
 
-from django.conf import settings
 from django.db import models
 from django.core.files.base import ContentFile
 from django.core.files.storage import FileSystemStorage
@@ -16,6 +15,7 @@ from timedelta.fields import TimedeltaField
 from screamshot.utils import casperjs_capture
 
 from .managers import WebPageScreenshotManager
+from . import app_settings
 
 SCREENSHOT_FORMAT = (
     ('html', 'html'),
@@ -27,7 +27,7 @@ SCREENSHOT_FORMAT = (
     ('xbm', 'xbm'),
 )
 
-SCREAMSHOT_AS_INSTANCE = getattr(settings, 'SCREAMSHOT_AS_INSTANCE', False)
+SCREAMSHOT_AS_INSTANCE = apps_settings.get['SCREAMSHOT_AS_INSTANCE']
 
 
 class OverwriteStorage(FileSystemStorage):
