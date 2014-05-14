@@ -18,10 +18,11 @@ install:
  - pip install -q Django==$DJANGO_VERSION --use-mirrors
  - pip install mock
  - pip install flake8 coverage --use-mirrors
+ - pip install django-timedeltafield
 
 before_script:
     - "pep8 --ignore=E501 screamshot"
-    - flake8 screamshot
+    - flake8 --ignore=E501 screamshot
 
 script:
     - coverage run quicktest.py screamshot
