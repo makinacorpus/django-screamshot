@@ -8,7 +8,11 @@ from django.db import models
 from django.core.files.base import ContentFile
 from django.core.files.storage import FileSystemStorage
 from django.utils.translation import ugettext_lazy as _
-from django.utils import timezone
+
+try:
+    from django.utils import timezone as timebase
+except ImportError:
+    from datetime import datetime as timebase
 
 from timedelta.fields import TimedeltaField
 
@@ -127,7 +131,7 @@ class WebPageScreenshot(models.Model):
         """Return True if screenshot is expired"""
         expired = False
         if self.validity and not self.never_update:
-            expired = timezone.now() > self.last_updated + self.validity
+            expired = timebase.now() > self.last_updated + self.validity
         return expired
 
     def update_screenshot(self, save=True):
@@ -156,7 +160,7 @@ class WebPageScreenshot(models.Model):
         filename = '.'.join((base_filename, file_ext))
 
         self.screenshot = filename
-        self.last_updated = timezone.now()
+        self.last_updated = timebase.now()
         self.screenshot.save(filename, ContentFile(screenshot_data), save=save)
 
     def screenshot_tag(self):
