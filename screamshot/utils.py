@@ -80,7 +80,7 @@ CASPERJS_CMD = casperjs_command()
 
 def casperjs_capture(stream, url, method=None, width=None, height=None,
                      selector=None, data=None, waitfor=None, size=None,
-                     crop=None, render='png'):
+                     crop=None, render='png', wait=None):
     """
     Captures web pages using ``casperjs``
     """
@@ -106,6 +106,8 @@ def casperjs_capture(stream, url, method=None, width=None, height=None,
             cmd += ['--data="%s"' % json.dumps(data)]
         if waitfor:
             cmd += ['--waitfor=%s' % waitfor]
+        if wait:
+            cmd += ['--wait=%s' % wait]
         logger.debug(cmd)
         # Run CasperJS process
         proc = subprocess.Popen(cmd, **casperjs_command_kwargs())

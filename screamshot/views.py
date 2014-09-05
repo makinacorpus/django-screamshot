@@ -30,6 +30,7 @@ def capture(request):
     selector = parameters.get('selector')
     data = parameters.get('data')
     waitfor = parameters.get('waitfor')
+    wait = parameters.get('wait')
     render = parameters.get('render', 'png')
     size = parameters.get('size')
     crop = parameters.get('crop')
@@ -47,7 +48,8 @@ def capture(request):
     try:
         casperjs_capture(stream, url, method=method.lower(), width=width,
                          height=height, selector=selector, data=data,
-                         size=size, waitfor=waitfor, crop=crop, render=render)
+                         size=size, waitfor=waitfor, crop=crop, render=render,
+                         wait=wait)
     except CaptureError as e:
         return HttpResponseBadRequest(e)
     except ImportError:
