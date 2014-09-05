@@ -55,7 +55,8 @@ else {
           data = casper.cli.options.data || '{}',
          width = casper.cli.options.width || 1400,
         height = casper.cli.options.height || 900,
-       waitfor = casper.cli.options.waitfor;
+       waitfor = casper.cli.options.waitfor,
+          wait = casper.cli.options.wait;
     casper.options.viewportSize = {width: width, height: height};
 
     data = JSON.parse(data);
@@ -75,6 +76,10 @@ else {
 
     if (waitfor) {
         casper.waitForSelector(waitfor, function() {
+            capture(selector, output);
+        });
+    } else if (wait) {
+        casper.wait(wait, function() {
             capture(selector, output);
         });
     } else {
