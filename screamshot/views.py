@@ -60,13 +60,13 @@ def capture(request):
         return HttpResponseBadRequest(error_msg)
 
     if render == "html":
-        response = HttpResponse(mimetype='text/html')
+        response = HttpResponse(content_type='text/html')
         body = """<html><body onload="window.print();">
                 <img src="data:image/png;base64,%s"/></body></html>
                 """ % base64.encodestring(stream.getvalue())
         response.write(body)
     else:
-        response = HttpResponse(mimetype=image_mimetype(render))
+        response = HttpResponse(content_type=image_mimetype(render))
         response.write(stream.getvalue())
 
     return response
