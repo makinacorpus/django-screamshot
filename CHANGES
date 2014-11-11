@@ -2,10 +2,12 @@
 CHANGELOG
 =========
 
-0.4.1 (unreleased)
+0.5.0 (unreleased)
 ==================
 
-- Nothing changed yet.
+* Added screenshot model and adminsite support (by Luc Milland)
+* Allows to wait for a given time (milliseconds) before doing the screenshot (by Florent Lebreton)
+* Replace mimetype by content_type in HttpResponse for django1.7 compliance (by Florent Lebreton)
 
 
 0.4.0 (2014-03-19)
