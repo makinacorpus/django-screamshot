@@ -11,8 +11,10 @@ the simplest Django project powered by *django-screamshot*.
 INSTALL
 =======
 
-First make sure you have the ``casperjs`` command in your ``PATH``, using
-related `installation instructions <http://casperjs.org>`_.
+First make sure you have either the ``casperjs`` or ``phantomjs`` command in your ``PATH``, using
+related installation instructions:
+ * `CasperJS <http://casperjs.org>`_.
+ * `PhantomJS <http://phantomjs.org>`_.
 
 Then install the egg :
 
@@ -163,18 +165,33 @@ And use the provided decorator :
         ...
 
 
-CasperJS command and CLI arguments
+Renderer command and CLI arguments
 ----------------------------------
+You can specify which renderer you would like to use, by setting the 
+``CAPTURE_METHOD`` setting. The default value is 'casperjs'. Possible values
+are 'casperjs' and 'phantomjs'.
 
-By default, we look for thr CasperJS binary in the ``PATH``
+::
+
+    SCREAMSHOT_CONFIG = {
+        'CAPTURE_METHOD': 'phantomjs',
+    }
+
+
+By default, we look for thr CasperJS/PhantomJS binary in the ``PATH``
 environment variable (like ``which``), but you can bypass this:
 
 ::
 
     SCREAMSHOT_CONFIG = {
         'CASPERJS_CMD': '/home/you/Downloads/apps/casperjs',
+        'PHANTOMJS_CMD': '/home/you/Downloads/apps/phantomjs'
     }
 
+
+Please note, that the ``CAPTURE_METHOD`` setting specifies which location would
+be evaluated, i.e. if you set ``CAPTURE_METHOD`` to 'phantomjs', ``PHANTOMJS_CMD``
+would be evaluated.
 
 You can also specify PhantomJS/CasperJS extra-args, such as
  ``--disk-cache=true`` with the ``CLI_ARGS`` setting :
@@ -186,6 +203,19 @@ You can also specify PhantomJS/CasperJS extra-args, such as
     }
 
 See related documentation on PhantomJS and CasperJS homepages.
+
+
+You can also override the capture script. A default implementation uses capture
+script written for CasperJS. A default capture script for PhantomJS is also provided.
+
+If you have your own script which you would like to use, specify it in 
+``CAPTURE_SCRIPT`` option.
+
+::
+
+    SCREAMSHOT_CONFIG = {
+        'CAPTURE_SCRIPT': '/home/you/scripts/capture.js',
+    }
 
 
 Notes about runserver
