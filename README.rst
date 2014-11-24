@@ -121,6 +121,31 @@ root url for reversing (*default is local*) :
         'CAPTURE_ROOT_URL': 'http://127.0.0.1:8001',
     }
 
+
+As a library - render local Django template
+-------------------------------------------
+Sometimes, you don't have access to the request object. A typical example would be creating a PDF receipt for a customer and emailing it. Both of these tasks can take a while, so it is natural to push them into some queue (like RabbitMQ). But if your pdf-rendering task get's executed, you don't have access to the request object. Don't worry - you can still use screamshot as a library. Here's how.
+
+::
+
+    from screamshot.utils import render_template
+
+    # you can either render the template to a TemporaryFile:
+
+    with render_template('my-template.html', {'context': 'variables'}) as output:
+        # do anything you want with the output
+        # like attach it to email message, etc.
+        print(output.name)
+
+    # or you can specify a path instead:
+    render_template('my-template.html',
+        {'context': 'variables'},
+        output='/home/you/rendering.png',
+        format='png')
+
+
+Please note, that in order to load your static files, screamshot will try to replace all STATIC_URL occurence with a local path to your static files (only if they are not hosted via https of course)
+
 Customizing the page rendering
 ------------------------------
 

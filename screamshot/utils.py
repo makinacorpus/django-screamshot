@@ -9,6 +9,10 @@ from mimetypes import guess_type, guess_all_extensions
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.urlresolvers import reverse
 from django.core.validators import URLValidator
+from StringIO import StringIO
+from django.template.loader import render_to_string
+from django.conf import settings
+
 
 from . import app_settings
 
@@ -319,3 +323,61 @@ def build_absolute_uri(request, url):
     if app_settings.get('CAPTURE_ROOT_URL'):
         return urljoin(app_settings.get('CAPTURE_ROOT_URL'), url)
     return request.build_absolute_uri(url)
+
+
+def render_template(template_name, context, format='png',
+                    output=None, **options):
+    """
+    Render a template from django project, and return the
+    file object of the result.
+    """
+    # output stream, as required by casperjs_capture
+    stream = StringIO()
+    out_f = None
+    # the suffix=.html is a hack for phantomjs which *will*
+    # complain about not being able to open source file
+    # unless it has a 'html' extension.
+    with NamedTemporaryFile(suffix='.html') as render_file:
+        template_content = render_to_string(
+            template_name,
+            context
+        )
+        # now, we need to replace all occurences of STATIC_URL
+        # with the corresponding file://STATIC_ROOT, but only
+        # if STATIC_URL doesn't contain a public URI (like http(s))
+        static_url = getattr(settings, 'STATIC_URL', '')
+        if settings.STATIC_ROOT and\
+           static_url and not static_url.startswith('http'):
+            template_content = template_content.replace(
+                static_url,
+                'file://%s' % settings.STATIC_ROOT
+            )
+        render_file.write(template_content)
+        # this is so that the temporary file actually gets filled
+        # with the result.
+        render_file.seek(0)
+
+        casperjs_capture(
+            stream,
+            url='file://%s' % render_file.name,
+            **options
+        )
+
+        # if no output was provided, use NamedTemporaryFile
+        # (so it is an actual file) and return it (so that
+        # after function ends, it gets automatically removed)
+        if not output:
+            out_f = NamedTemporaryFile()
+        else:
+            # if output was provided, write the rendered
+            # content to it
+            out_f = open(output, 'wb')
+        out_f.write(stream.getvalue())
+        out_f.seek(0)
+
+        # return the output if NamedTemporaryFile was used
+        if not output:
+            return out_f
+        else:
+            # otherwise, just close the file.
+            out_f.close()
