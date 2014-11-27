@@ -5,8 +5,8 @@ CHANGELOG
 0.5.1 (unreleased)
 ==================
 
-- Nothing changed yet.
-
+* Added support of pure PhantomJS capture, i.e. without CasperJS, without selector (by Mateusz Mikolajczyk)
+* Support for capturing locally rendered templates, without external request (by Mateusz Mikolajczyk)
 
 0.5.0 (2014-11-11)
 ==================
