@@ -41,15 +41,21 @@ def casperjs_command_kwargs():
 
 def casperjs_command():
     """
-    If setting CASPERJS_CMD is not defined, then
-    look up for ``casperjs`` in shell PATH and
-    builds the whole capture command.
+    Determine which capture engine is specified. Possible options:
+    - casperjs
+    - phantomjs
+    Based on this value, locate the binary of the capture engine.
+
+    If setting <engine>_CMD is not defined, then
+    look up for ``<engine>`` in shell PATH and
+    build the whole capture command.
     """
-    cmd = app_settings['CASPERJS_CMD']
+    method = app_settings['CAPTURE_METHOD']
+    cmd = app_settings['%s_CMD' % method.upper()]
     if cmd is None:
         sys_path = os.getenv('PATH', '').split(':')
         for binpath in sys_path:
-            cmd = os.path.join(binpath, 'casperjs')
+            cmd = os.path.join(binpath, method)
             if os.path.exists(cmd):
                 break
     cmd = [cmd]
@@ -59,10 +65,10 @@ def casperjs_command():
         status = proc.returncode
         assert status == 0
     except OSError:
-        msg = "CasperJS binary cannot be found in PATH (%s)" % sys_path
+        msg = "%s binary cannot be found in PATH (%s)" % (method, sys_path)
         raise ImproperlyConfigured(msg)
     except AssertionError:
-        msg = "CasperJS returned status code %s" % status
+        msg = "%s returned status code %s" % (method, status)
         raise ImproperlyConfigured(msg)
 
     # Add extra CLI arguments
@@ -70,7 +76,11 @@ def casperjs_command():
 
     # Concatenate with capture script
     app_path = os.path.dirname(__file__)
-    capture = os.path.join(app_path, 'scripts', 'capture.js')
+
+    capture = app_settings['CAPTURE_SCRIPT']
+    if capture.startswith('./'):
+        capture = os.path.join(app_path, 'scripts', capture)
+
     assert os.path.exists(capture), 'Cannot find %s' % capture
     return cmd + [capture]
 
