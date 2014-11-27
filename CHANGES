@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-0.5.1 (unreleased)
+0.6.0 (2014-11-27)
 ==================
 
 * Added support of pure PhantomJS capture, i.e. without CasperJS, without selector (by Mateusz Mikolajczyk)
