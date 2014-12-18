@@ -102,12 +102,13 @@ def casperjs_capture(stream, url, method=None, width=None, height=None,
         if isinstance(stream, basestring):
             output = stream
         else:
-            with NamedTemporaryFile('rwb', suffix='.png', delete=False) as f:
+            with NamedTemporaryFile('rwb', suffix='.%s' % render, delete=False) as f:
                 output = f.name
 
         cmd = CASPERJS_CMD + [url, output]
 
         # Extra command-line options
+        cmd += ['--format=%s' % render]
         if method:
             cmd += ['--method=%s' % method]
         if width:
@@ -130,7 +131,9 @@ def casperjs_capture(stream, url, method=None, width=None, height=None,
 
         size = parse_size(size)
         render = parse_render(render)
-        if size or (render and render != 'png'):
+
+        if size or (render and render != 'png' and render != 'pdf'):
+            # pdf isn't an image, therefore we can't postprocess it.
             image_postprocess(output, stream, size, crop, render)
         else:
             if stream != output:
@@ -217,7 +220,8 @@ def parse_render(render):
         'gif': guess_all_extensions('image/gif'),
         'bmp': guess_all_extensions('image/x-ms-bmp'),
         'tiff': guess_all_extensions('image/tiff'),
-        'xbm': guess_all_extensions('image/x-xbitmap')
+        'xbm': guess_all_extensions('image/x-xbitmap'),
+        'pdf': guess_all_extensions('application/pdf')
     }
     if not render:
         render = 'png'
