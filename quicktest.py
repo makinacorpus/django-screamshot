@@ -2,6 +2,7 @@ import os
 import sys
 import argparse
 
+import django
 from django.conf import settings
 
 
@@ -30,7 +31,7 @@ class QuickDjangoTest(object):
 
     def run_tests(self):
         """
-        Fire up the Django test suite developed for version 1.2
+        Fire up the Django test suite
         """
         settings.configure(
             DEBUG = True,
@@ -52,8 +53,17 @@ class QuickDjangoTest(object):
             },
             INSTALLED_APPS = self.INSTALLED_APPS + self.apps
         )
-        from django.test.simple import DjangoTestSuiteRunner
-        failures = DjangoTestSuiteRunner().run_tests(self.apps, verbosity=1)
+        django.setup()
+        try:
+            # Django <= 1.8
+            from django.test.simple import DjangoTestSuiteRunner
+            test_runner = DjangoTestSuiteRunner(verbosity=1)
+        except ImportError:
+            # Django >= 1.8
+            from django.test.runner import DiscoverRunner
+            test_runner = DiscoverRunner(verbosity=1)
+
+        failures = test_runner.run_tests(self.apps)
         if failures: # pragma: no cover
             sys.exit(failures)
 

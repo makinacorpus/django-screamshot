@@ -1,13 +1,13 @@
 import base64
 import logging
-from StringIO import StringIO
+from io import StringIO
 
 from django.core.urlresolvers import NoReverseMatch
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.utils.translation import ugettext as _
 
-from utils import (casperjs_capture, CaptureError, UnsupportedImageFormat,
-                   image_mimetype, parse_url)
+from .utils import (casperjs_capture, CaptureError, UnsupportedImageFormat,
+                    image_mimetype, parse_url)
 
 logger = logging.getLogger(__name__)
 

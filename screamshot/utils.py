@@ -3,18 +3,29 @@ import logging
 import subprocess
 from tempfile import NamedTemporaryFile
 import json
-from urlparse import urljoin
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    # Python 3
+    from urlparse import urlparse
 from mimetypes import guess_type, guess_all_extensions
 
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.urlresolvers import reverse
 from django.core.validators import URLValidator
-from StringIO import StringIO
+from io import StringIO
 from django.template.loader import render_to_string
 from django.conf import settings
 
 
 from . import app_settings
+
+try:
+    unicode = unicode
+except NameError:
+    # Python 3
+    unicode = str
+    basestring = (str, bytes)
 
 
 logger = logging.getLogger(__name__)
@@ -227,7 +238,7 @@ def parse_render(render):
         render = 'png'
     else:
         render = render.lower()
-        for k, v in formats.iteritems():
+        for k, v in formats.items():
             if '.%s' % render in v:
                 render = k
                 break

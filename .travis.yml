@@ -3,10 +3,13 @@ language: python
 python:
   - 2.6
   - 2.7
+  - 3.4
 
 env:
   - DJANGO_VERSION=1.5
   - DJANGO_VERSION=1.6
+  - DJANGO_VERSION=1.7
+  - DJANGO_VERSION=1.8
 
 install:
  - "git clone git://github.com/n1k0/casperjs.git"
@@ -19,7 +22,7 @@ install:
  - pip install django-timedeltafield
 
 before_script:
-    - "pep8 --ignore=E501 screamshot"
+    - pep8 --ignore=E501 screamshot
     - flake8 --ignore=E501 screamshot
 
 script:
