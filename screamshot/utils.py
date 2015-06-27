@@ -1,15 +1,11 @@
+from django.utils import six
 import os
 import logging
 import subprocess
 from tempfile import NamedTemporaryFile
 import json
-try:
-    from urllib.parse import urlparse
-except ImportError:
-    # Python 3
-    from urlparse import urlparse
 from mimetypes import guess_type, guess_all_extensions
-
+from django.utils.six.moves.urllib.parse import urljoin
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.urlresolvers import reverse
 from django.core.validators import URLValidator
@@ -19,13 +15,6 @@ from django.conf import settings
 
 
 from . import app_settings
-
-try:
-    unicode = unicode
-except NameError:
-    # Python 3
-    unicode = str
-    basestring = (str, bytes)
 
 
 logger = logging.getLogger(__name__)
@@ -110,7 +99,7 @@ def casperjs_capture(stream, url, method=None, width=None, height=None,
     Captures web pages using ``casperjs``
     """
     try:
-        if isinstance(stream, basestring):
+        if isinstance(stream, six.string_types):
             output = stream
         else:
             with NamedTemporaryFile('rwb', suffix='.%s' % render, delete=False) as f:
