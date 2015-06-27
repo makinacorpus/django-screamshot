@@ -5,7 +5,11 @@ import subprocess
 from tempfile import NamedTemporaryFile
 import json
 from mimetypes import guess_type, guess_all_extensions
-from django.utils.six.moves.urllib.parse import urljoin
+try:
+    from urllib.parse import urljoin
+except ImportError:
+    # Python 2
+    from urlparse import urljoin
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.urlresolvers import reverse
 from django.core.validators import URLValidator
