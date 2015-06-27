@@ -2,9 +2,8 @@ import os
 import sys
 import argparse
 
-import django
+from django import VERSION
 from django.conf import settings
-
 
 class QuickDjangoTest(object):
     """
@@ -53,9 +52,11 @@ class QuickDjangoTest(object):
             },
             INSTALLED_APPS = self.INSTALLED_APPS + self.apps
         )
-        django.setup()
+        if VERSION >= (1, 7):
+            import django
+            django.setup()
         try:
-            # Django <= 1.8
+            # Django < 1.8
             from django.test.simple import DjangoTestSuiteRunner
             test_runner = DjangoTestSuiteRunner(verbosity=1)
         except ImportError:
