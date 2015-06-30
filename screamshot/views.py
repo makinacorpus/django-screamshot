@@ -1,6 +1,6 @@
 import base64
 import logging
-from io import StringIO
+from io import BytesIO
 
 from django.core.urlresolvers import NoReverseMatch
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -44,7 +44,7 @@ def capture(request):
     except ValueError:
         height = None
 
-    stream = StringIO()
+    stream = BytesIO()
     try:
         casperjs_capture(stream, url, method=method.lower(), width=width,
                          height=height, selector=selector, data=data,

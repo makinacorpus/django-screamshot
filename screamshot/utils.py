@@ -102,13 +102,12 @@ def casperjs_capture(stream, url, method=None, width=None, height=None,
     """
     Captures web pages using ``casperjs``
     """
+    if isinstance(stream, six.string_types):
+        output = stream
+    else:
+        with NamedTemporaryFile('wb+', suffix='.%s' % render, delete=False) as f:
+            output = f.name
     try:
-        if isinstance(stream, six.string_types):
-            output = stream
-        else:
-            with NamedTemporaryFile('rwb', suffix='.%s' % render, delete=False) as f:
-                output = f.name
-
         cmd = CASPERJS_CMD + [url, output]
 
         # Extra command-line options
@@ -142,7 +141,7 @@ def casperjs_capture(stream, url, method=None, width=None, height=None,
         else:
             if stream != output:
                 # From file to stream
-                with open(output) as out:
+                with open(output, 'rb') as out:
                     stream.write(out.read())
                 stream.flush()
     finally:
