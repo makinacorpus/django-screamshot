@@ -1,3 +1,4 @@
+from django.utils.encoding import python_2_unicode_compatible
 import io
 import imghdr
 from hashlib import md5
@@ -48,6 +49,7 @@ class OverwriteStorage(FileSystemStorage):
         return name
 
 
+@python_2_unicode_compatible
 class WebPageScreenshot(models.Model):
     """Straightforward implementation of screamshots as model objects.
     in additions to fields used for screamshot.utils.casperjs_capture
@@ -118,7 +120,7 @@ class WebPageScreenshot(models.Model):
         verbose_name = _("Web page screenshot")
         verbose_name_plural = _("Web pages screenshots")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     def save(self, *args, **kwargs):

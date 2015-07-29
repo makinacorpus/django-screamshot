@@ -3,23 +3,31 @@ language: python
 python:
   - 2.6
   - 2.7
+  - 3.4
 
 env:
   - DJANGO_VERSION=1.5
   - DJANGO_VERSION=1.6
+  - DJANGO_VERSION=1.7
+  - DJANGO_VERSION=1.8
+matrix:
+  exclude:
+    - python: 2.6
+      env: DJANGO_VERSION=1.7
+    - python: 2.6
+      env: DJANGO_VERSION=1.8
 
 install:
  - "git clone git://github.com/n1k0/casperjs.git"
  - "sudo ln -s `pwd`/casperjs/bin/casperjs /usr/local/bin"
-   # This is a dependency of our Django test script
- - pip install argparse --use-mirrors
+ - pip install argparse --use-mirrors  # This is a dependency of our Django test script
  - pip install -q Django==$DJANGO_VERSION --use-mirrors
  - pip install mock
  - pip install flake8 coverage --use-mirrors
  - pip install django-timedeltafield
 
 before_script:
-    - "pep8 --ignore=E501 screamshot"
+    - pep8 --ignore=E501 screamshot
     - flake8 --ignore=E501 screamshot
 
 script:

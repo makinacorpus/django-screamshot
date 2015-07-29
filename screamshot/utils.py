@@ -1,15 +1,19 @@
+from django.utils import six
 import os
 import logging
 import subprocess
 from tempfile import NamedTemporaryFile
 import json
-from urlparse import urljoin
 from mimetypes import guess_type, guess_all_extensions
-
+try:
+    from urllib.parse import urljoin
+except ImportError:
+    # Python 2
+    from urlparse import urljoin
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.urlresolvers import reverse
 from django.core.validators import URLValidator
-from StringIO import StringIO
+from io import StringIO
 from django.template.loader import render_to_string
 from django.conf import settings
 
@@ -98,13 +102,12 @@ def casperjs_capture(stream, url, method=None, width=None, height=None,
     """
     Captures web pages using ``casperjs``
     """
+    if isinstance(stream, six.string_types):
+        output = stream
+    else:
+        with NamedTemporaryFile('wb+', suffix='.%s' % render, delete=False) as f:
+            output = f.name
     try:
-        if isinstance(stream, basestring):
-            output = stream
-        else:
-            with NamedTemporaryFile('rwb', suffix='.%s' % render, delete=False) as f:
-                output = f.name
-
         cmd = CASPERJS_CMD + [url, output]
 
         # Extra command-line options
@@ -138,7 +141,7 @@ def casperjs_capture(stream, url, method=None, width=None, height=None,
         else:
             if stream != output:
                 # From file to stream
-                with open(output) as out:
+                with open(output, 'rb') as out:
                     stream.write(out.read())
                 stream.flush()
     finally:
@@ -227,7 +230,7 @@ def parse_render(render):
         render = 'png'
     else:
         render = render.lower()
-        for k, v in formats.iteritems():
+        for k, v in formats.items():
             if '.%s' % render in v:
                 render = k
                 break
