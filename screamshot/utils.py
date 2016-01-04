@@ -13,7 +13,7 @@ except ImportError:
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.urlresolvers import reverse
 from django.core.validators import URLValidator
-from io import StringIO
+from io import BytesIO
 from django.template.loader import render_to_string
 from django.conf import settings
 
@@ -339,7 +339,7 @@ def render_template(template_name, context, format='png',
     file object of the result.
     """
     # output stream, as required by casperjs_capture
-    stream = StringIO()
+    stream = BytesIO()
     out_f = None
     # the suffix=.html is a hack for phantomjs which *will*
     # complain about not being able to open source file
@@ -359,7 +359,7 @@ def render_template(template_name, context, format='png',
                 static_url,
                 'file://%s' % settings.STATIC_ROOT
             )
-        render_file.write(template_content)
+        render_file.write(template_content.encode('utf-8'))
         # this is so that the temporary file actually gets filled
         # with the result.
         render_file.seek(0)
