@@ -10,4 +10,5 @@ app_settings = dict({
     'CASPERJS_CMD': None,
     'PHANTOMJS_CMD': None,
     'SCREAMSHOT_AS_INSTANCE': False,
+    'TEST_CAPTURE_SCRIPT': True,
 }, **getattr(settings, 'SCREAMSHOT_CONFIG', {}))
