@@ -67,17 +67,19 @@ def casperjs_command():
             if os.path.exists(cmd):
                 break
     cmd = [cmd]
-    try:
-        proc = subprocess.Popen(cmd + ['--version'], **casperjs_command_kwargs())
-        proc.communicate()
-        status = proc.returncode
-        assert status == 0
-    except OSError:
-        msg = "%s binary cannot be found in PATH (%s)" % (method, sys_path)
-        raise ImproperlyConfigured(msg)
-    except AssertionError:
-        msg = "%s returned status code %s" % (method, status)
-        raise ImproperlyConfigured(msg)
+
+    if app_settings['TEST_CAPTURE_SCRIPT']:
+        try:
+            proc = subprocess.Popen(cmd + ['--version'], **casperjs_command_kwargs())
+            proc.communicate()
+            status = proc.returncode
+            assert status == 0
+        except OSError:
+            msg = "%s binary cannot be found in PATH (%s)" % (method, sys_path)
+            raise ImproperlyConfigured(msg)
+        except AssertionError:
+            msg = "%s returned status code %s" % (method, status)
+            raise ImproperlyConfigured(msg)
 
     # Add extra CLI arguments
     cmd += app_settings['CLI_ARGS']
