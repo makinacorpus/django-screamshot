@@ -27,7 +27,6 @@ install:
  - pip install django-timedeltafield
 
 before_script:
-    - pep8 --ignore=E501 screamshot
     - flake8 --ignore=E501 screamshot
 
 script:
