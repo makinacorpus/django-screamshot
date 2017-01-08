@@ -30,5 +30,6 @@ class WebPageScreenshotAdmin(admin.ModelAdmin):
         'waitfor',
     ]
 
+
 if SCREAMSHOT_AS_INSTANCE:
     admin.site.register(WebPageScreenshot, WebPageScreenshotAdmin)
