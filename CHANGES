@@ -2,10 +2,13 @@
 CHANGELOG
 =========
 
-0.6.1 (unreleased)
+0.7.0 (2017-10-08)
 ==================
 
-- Nothing changed yet.
+* Support for rendering PDF
+* Python 3 support
+* Django 1.8 support
+* Add TEST_CAPTURE_SCRIPT setting
 
 
 0.6.0 (2014-11-27)
@@ -13,6 +16,7 @@ CHANGELOG
 
 * Added support of pure PhantomJS capture, i.e. without CasperJS, without selector (by Mateusz Mikolajczyk)
 * Support for capturing locally rendered templates, without external request (by Mateusz Mikolajczyk)
+
 
 0.5.0 (2014-11-11)
 ==================
@@ -63,10 +67,12 @@ CHANGELOG
 * Updated CasperJS CLI status code
 * Detect forwarded IP address in login decorator
 
+
 0.1.1 (2012-04-17)
 ==================
 
 * Include package data
+
 
 0.1.0 (2012-04-17)
 ==================
