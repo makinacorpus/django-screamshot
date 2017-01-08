@@ -20,10 +20,10 @@ matrix:
 install:
  - "git clone git://github.com/n1k0/casperjs.git"
  - "sudo ln -s `pwd`/casperjs/bin/casperjs /usr/local/bin"
- - pip install argparse --use-mirrors  # This is a dependency of our Django test script
- - pip install -q Django==$DJANGO_VERSION --use-mirrors
+ - pip install argparse  # This is a dependency of our Django test script
+ - pip install -q Django==$DJANGO_VERSION
  - pip install mock
- - pip install flake8 coverage --use-mirrors
+ - pip install flake8 coverage
  - pip install django-timedeltafield
 
 before_script:
