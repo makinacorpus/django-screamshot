@@ -1,7 +1,7 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from .views import capture
 
-
-urlpatterns = patterns('screamshot.views',
-                       url(r'^$', capture, name='capture'))
+urlpatterns = [
+    url(r'^', capture, name='capture')
+]
