@@ -1,6 +1,10 @@
-|travis|_ |pypi|_
+|travis|_
+
 .. |travis| image:: https://travis-ci.org/makinacorpus/django-screamshot.svg?branch=master
 .. _travis:  https://travis-ci.org/makinacorpus/django-screamshot
+
+|pypi|_
+
 .. |pypi| image:: https://img.shields.io/pypi/v/django-screamshot.svg
 .. _pypi:  https://pypi.python.org/pypi/django-screamshot
 
