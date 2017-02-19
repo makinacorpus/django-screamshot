@@ -1,5 +1,5 @@
-.. image:: https://travis-ci.org/makinacorpus/django-screamshot.svg?branch=master
-:target: https://travis-ci.org/makinacorpus/django-screamshot
+[![build-status-image]][travis]
+[![pypi-version]][pypi]
 
 *django-screamshot* is a **very naive** implementation of Web pages capture
 with `CasperJS <http://casperjs.org>`_ (*aaAAaah!*, `phantomjs <http://phantomjs.org>`_:))
@@ -274,3 +274,9 @@ LICENSE
 =======
 
     * Lesser GNU Public License
+
+
+[build-status-image]: https://secure.travis-ci.org/makinacorpus/django-screamshot.png?branch=master
+[travis]: http://travis-ci.org/makinacorpus/django-screamshot?branch=master
+[pypi-version]: https://img.shields.io/pypi/v/django-screamshot.svg
+[pypi]: https://pypi.python.org/pypi/django-screamshot
