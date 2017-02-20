@@ -2,28 +2,29 @@
  django-screamshot
 ===================
 
-.. image:: https://img.shields.io/pypi/l/django-screamshot.svg
-   :target: https://raw.githubusercontent.com/makinacorpus/django-screamshot/master/LICENSE
-
 .. image:: https://secure.travis-ci.org/makinacorpus/django-screamshot.svg?branch=master
     :alt: Build Status
     :target: http://travis-ci.org/makinacorpus/django-screamshot
 
 .. image:: https://img.shields.io/pypi/v/django-screamshot.svg
-    :target: https://pypi.python.org/pypi/django-screamshot/
     :alt: Latest PyPI version
-
-.. image:: https://img.shields.io/github/downloads/makinacorpus/django-screamshot/total.svg
-    :target: https://github.com/makinacorpus/django-screamshot
-    :alt: Number of Git Hub downloads
+    :target: https://pypi.python.org/pypi/django-screamshot/
 
 .. image:: https://img.shields.io/pypi/dw/django-screamshot.svg
-    :target: https://pypi.python.org/pypi/django-screamshot/
     :alt: Number of PyPI downloads
+    :target: https://pypi.python.org/pypi/django-screamshot/
+
+.. image:: https://img.shields.io/github/downloads/makinacorpus/django-screamshot/total.svg
+    :alt: Number of Git Hub downloads
+    :target: https://github.com/makinacorpus/django-screamshot
 
 .. image:: https://img.shields.io/pypi/format/django-screamshot.svg
-    :target: https://pypi.python.org/pypi/django-screamshot/
     :alt: Format
+    :target: https://pypi.python.org/pypi/django-screamshot/
+
+.. image:: https://img.shields.io/pypi/l/django-screamshot.svg
+    :alt: License
+    :target: https://raw.githubusercontent.com/makinacorpus/django-screamshot/master/LICENSE
 
 
 *django-screamshot* is a **very naive** implementation of Web pages capture
