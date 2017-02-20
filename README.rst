@@ -13,13 +13,17 @@
     :target: https://pypi.python.org/pypi/django-screamshot/
     :alt: Latest PyPI version
 
-.. image:: https://img.shields.io/pypi/dm/django-screamshot.svg
+.. image:: https://img.shields.io/github/downloads/makinacorpus/django-screamshot/total.svg
+    :target: https://github.com/makinacorpus/django-screamshot
+    :alt: Number of Git Hub downloads
+
+.. image:: https://img.shields.io/pypi/dw/django-screamshot.svg
     :target: https://pypi.python.org/pypi/django-screamshot/
     :alt: Number of PyPI downloads
 
-.. image:: https://img.shields.io/pypi/wheel/django-screamshot.svg
+.. image:: https://img.shields.io/pypi/format/django-screamshot.svg
     :target: https://pypi.python.org/pypi/django-screamshot/
-    :alt: Supports Wheel format
+    :alt: Format
 
 
 *django-screamshot* is a **very naive** implementation of Web pages capture
