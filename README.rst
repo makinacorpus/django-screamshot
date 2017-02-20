@@ -16,7 +16,7 @@
 
 .. image:: https://img.shields.io/github/downloads/makinacorpus/django-screamshot/total.svg
     :alt: Number of Git Hub downloads
-    :target: https://github.com/makinacorpus/django-screamshot
+    :target: https://github.com/makinacorpus/django-screamshot/archive/master.zip
 
 .. image:: https://img.shields.io/pypi/format/django-screamshot.svg
     :alt: Format
