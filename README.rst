@@ -1,14 +1,31 @@
-=======
-django-screamshot
-=======
+===================
+ django-screamshot
+===================
 
-|travis|_   |pypi|_
+.. image:: https://secure.travis-ci.org/makinacorpus/django-screamshot.svg?branch=master
+    :alt: Build Status
+    :target: http://travis-ci.org/makinacorpus/django-screamshot
 
-.. |travis| image:: https://travis-ci.org/makinacorpus/django-screamshot.svg?branch=master
-.. _travis:  https://travis-ci.org/makinacorpus/django-screamshot
+.. image:: https://img.shields.io/pypi/v/django-screamshot.svg
+    :alt: Latest PyPI version
+    :target: https://pypi.python.org/pypi/django-screamshot/
 
-.. |pypi| image:: https://img.shields.io/pypi/v/django-screamshot.svg
-.. _pypi:  https://pypi.python.org/pypi/django-screamshot
+.. image:: https://img.shields.io/pypi/dw/django-screamshot.svg
+    :alt: Number of PyPI downloads
+    :target: https://pypi.python.org/pypi/django-screamshot/
+
+.. image:: https://img.shields.io/github/downloads/makinacorpus/django-screamshot/total.svg
+    :alt: Number of Git Hub downloads
+    :target: https://github.com/makinacorpus/django-screamshot/archive/master.zip
+
+.. image:: https://img.shields.io/pypi/format/django-screamshot.svg
+    :alt: Format
+    :target: https://pypi.python.org/pypi/django-screamshot/
+
+.. image:: https://img.shields.io/pypi/l/django-screamshot.svg
+    :alt: License
+    :target: https://raw.githubusercontent.com/makinacorpus/django-screamshot/master/LICENSE
+
 
 *django-screamshot* is a **very naive** implementation of Web pages capture
 with `CasperJS <http://casperjs.org>`_ (*aaAAaah!*, `phantomjs <http://phantomjs.org>`_:))
