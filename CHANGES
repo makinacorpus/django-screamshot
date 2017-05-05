@@ -2,10 +2,12 @@
 CHANGELOG
 =========
 
-0.7.1.dev0
+0.8.0.dev0
 ==================
 
-*
+* Fix python 3 support
+* Add support for Django 1.11
+* Drop support for Django <1.8
 
 
 0.7.0 (2017-10-08)

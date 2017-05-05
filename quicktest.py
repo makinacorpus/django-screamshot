@@ -1,9 +1,11 @@
+import argparse
 import os
 import sys
-import argparse
 
-from django import VERSION
+import django
 from django.conf import settings
+from django.test.runner import DiscoverRunner
+
 
 class QuickDjangoTest(object):
     """
@@ -52,17 +54,10 @@ class QuickDjangoTest(object):
             },
             INSTALLED_APPS = self.INSTALLED_APPS + self.apps
         )
-        if VERSION >= (1, 7):
-            import django
-            django.setup()
-        try:
-            # Django < 1.8
-            from django.test.simple import DjangoTestSuiteRunner
-            test_runner = DjangoTestSuiteRunner(verbosity=1)
-        except ImportError:
-            # Django >= 1.8
-            from django.test.runner import DiscoverRunner
-            test_runner = DiscoverRunner(verbosity=1)
+
+        django.setup()
+
+        test_runner = DiscoverRunner(verbosity=1)
 
         failures = test_runner.run_tests(self.apps)
         if failures: # pragma: no cover
