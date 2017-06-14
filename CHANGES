@@ -8,7 +8,7 @@ CHANGELOG
 * Fix phantom path in PATH
 
 
-0.8.0 (2017-05-05)
+0.8.1 (2017-06-14)
 ==================
 
 * Fix python 3 support
