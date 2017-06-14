@@ -42,7 +42,9 @@ def casperjs_command_kwargs():
     }
     phantom_js_cmd = app_settings['PHANTOMJS_CMD']
     if phantom_js_cmd:
-        path = '{0}:{1}'.format(os.getenv('PATH', ''), phantom_js_cmd)
+        path = '{0}:{1}'.format(
+            os.getenv('PATH', ''), os.path.dirname(phantom_js_cmd)
+        )
         kwargs.update({'env': {'PATH': path}})
     return kwargs
 
