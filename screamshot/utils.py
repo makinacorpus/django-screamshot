@@ -62,8 +62,8 @@ def casperjs_command():
     """
     method = app_settings['CAPTURE_METHOD']
     cmd = app_settings['%s_CMD' % method.upper()]
+    sys_path = os.getenv('PATH', '').split(':')
     if cmd is None:
-        sys_path = os.getenv('PATH', '').split(':')
         for binpath in sys_path:
             cmd = os.path.join(binpath, method)
             if os.path.exists(cmd):
