@@ -2,10 +2,10 @@
 CHANGELOG
 =========
 
-0.8.2 (unreleased)
+0.8.2 (2018-07-04)
 ==================
 
-*
+* Response errors status code from 400 to 500
 
 
 0.8.1 (2017-06-14)
