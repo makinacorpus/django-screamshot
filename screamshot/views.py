@@ -3,7 +3,7 @@ import logging
 from io import BytesIO
 
 from django.core.urlresolvers import NoReverseMatch
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
 from django.utils.translation import ugettext as _
 
 from .utils import (casperjs_capture, CaptureError, UnsupportedImageFormat,
@@ -51,10 +51,10 @@ def capture(request):
                          size=size, waitfor=waitfor, crop=crop, render=render,
                          wait=wait)
     except CaptureError as e:
-        return HttpResponseBadRequest(e)
+        return HttpResponseServerError(e)
     except ImportError:
         error_msg = _('Resize not supported (PIL not available)')
-        return HttpResponseBadRequest(error_msg)
+        return HttpResponseServerError(error_msg)
     except UnsupportedImageFormat:
         error_msg = _('Unsupported image format: %s' % render)
         return HttpResponseBadRequest(error_msg)
