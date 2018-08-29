@@ -337,7 +337,7 @@ def build_absolute_uri(request, url):
 
 
 def render_template(template_name, context, format='png',
-                    output=None, **options):
+                    output=None, using=None, **options):
     """
     Render a template from django project, and return the
     file object of the result.
@@ -351,7 +351,8 @@ def render_template(template_name, context, format='png',
     with NamedTemporaryFile(suffix='.html') as render_file:
         template_content = render_to_string(
             template_name,
-            context
+            context,
+            using=using,
         )
         # now, we need to replace all occurences of STATIC_URL
         # with the corresponding file://STATIC_ROOT, but only
