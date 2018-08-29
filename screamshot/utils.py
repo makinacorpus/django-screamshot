@@ -1,4 +1,3 @@
-from django.utils import six
 import os
 import logging
 import subprocess
@@ -10,16 +9,22 @@ try:
 except ImportError:
     # Python 2
     from urlparse import urljoin
+
+from django.utils import six
 from django.core.exceptions import ImproperlyConfigured, ValidationError
-from django.core.urlresolvers import reverse
 from django.core.validators import URLValidator
 from io import BytesIO
 from django.template.loader import render_to_string
 from django.conf import settings
-
+from django import VERSION
 
 from . import app_settings
 
+
+if VERSION >= (2, 0):
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
 
 logger = logging.getLogger(__name__)
 
