@@ -11,6 +11,7 @@ env:
   - DJANGO_VERSION=1.9
   - DJANGO_VERSION=1.10
   - DJANGO_VERSION=1.11
+  - DJANGO_VERSION=2.0
 
 install:
  - "git clone git://github.com/n1k0/casperjs.git"
@@ -30,3 +31,8 @@ script:
 after_success:
  - pip install coveralls
  - coveralls
+
+matrix:
+  exclude:
+    - python: 2.7
+      env: DJANGO_VERSION=2.0
