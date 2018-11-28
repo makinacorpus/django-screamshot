@@ -1,13 +1,8 @@
 import base64
-try:
-    from io import BytesIO
-except ImportError:
-    from StringIO import StringIO as BytesIO
-
 from django import template
+from io import BytesIO
 
 from ..utils import casperjs_capture
-
 
 register = template.Library()
 
@@ -23,17 +18,17 @@ def base64capture(url, selector):
 
 @register.filter
 def mult(value, arg):
-    "Multiplies the arg and the value"
+    """Multiplies the arg and the value"""
     return int(value) * int(arg)
 
 
 @register.filter
 def sub(value, arg):
-    "Subtracts the arg from the value"
+    """Subtracts the arg from the value"""
     return int(value) - int(arg)
 
 
 @register.filter
 def div(value, arg):
-    "Divides the value by the arg"
+    """Divides the value by the arg"""
     return int(value) / int(arg)

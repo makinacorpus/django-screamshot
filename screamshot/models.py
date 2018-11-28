@@ -1,30 +1,19 @@
-from django.utils.encoding import python_2_unicode_compatible
-import io
+import django
 import imghdr
+import io
+from datetime import timedelta
+from django.core.files.base import ContentFile
+from django.core.files.storage import FileSystemStorage
+from django.db import models
+from django.utils import timezone as timebase
+from django.utils.encoding import python_2_unicode_compatible
+from django.utils.translation import ugettext_lazy as _
 from hashlib import md5
 from tempfile import NamedTemporaryFile
 
-from django.db import models
-from django.core.files.base import ContentFile
-from django.core.files.storage import FileSystemStorage
-from django.utils.translation import ugettext_lazy as _
-
-try:
-    from django.utils import timezone as timebase
-except ImportError:
-    from datetime import datetime as timebase
-
 from screamshot.utils import casperjs_capture
-
-from .managers import WebPageScreenshotManager
 from . import app_settings
-import django
-
-if django.VERSION >= (1, 10):
-    from datetime import timedelta
-else:
-    from timedelta.fields import TimedeltaField
-
+from .managers import WebPageScreenshotManager
 
 SCREENSHOT_FORMAT = (
     ('html', 'html'),
