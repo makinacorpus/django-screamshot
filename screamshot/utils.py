@@ -301,8 +301,7 @@ def image_postprocess(imagefile, output, size, crop, render):
     if size and crop and crop.lower() == 'true':
         width_raw, height_raw = img.size
         width, height = size
-        height_better = int(height_raw * (float(width) /
-                                          width_raw))
+        height_better = int(height_raw * (float(width) / width_raw))
         if height < height_better:
             size_crop = (0, 0, width, height)
 
