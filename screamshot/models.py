@@ -51,14 +51,7 @@ class WebPageScreenshot(models.Model):
     """
     title = models.CharField(_("Title"), max_length=500)
     comment = models.TextField(_("Comment"), blank=True)
-    if django.VERSION >= (1, 10):
-        validity = models.PositiveIntegerField(_("Validity"), default=0, blank=True, null=True, help_text="maximum validity period in days.")
-    else:
-        validity = TimedeltaField(
-            _("Validity"),
-            blank=True,
-            null=True,
-            help_text="maximum validity period.")
+    validity = models.PositiveIntegerField(_("Validity"), default=0, blank=True, null=True, help_text="maximum validity period in days.")
     screenshot = models.ImageField(
         _("screenshot"),
         upload_to='screenshots/',
@@ -128,10 +121,7 @@ class WebPageScreenshot(models.Model):
         """Return True if screenshot is expired"""
         expired = False
         if self.validity and not self.never_update:
-            if django.VERSION >= (1, 10):
-                expired = timebase.now() > self.last_updated + timedelta(days=self.validity)
-            else:
-                expired = timebase.now() > self.last_updated + self.validity
+            expired = timebase.now() > self.last_updated + timedelta(days=self.validity)
         return expired
 
     def update_screenshot(self, save=True):
