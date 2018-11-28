@@ -4,6 +4,7 @@ var casper = require("casper").create({
 
 
 function on_load_error(resource) {
+    this.echo(resource);
     this.echo("ERROR: " + 'Cannot open ' + resource.url, "ERROR");
 }
 
