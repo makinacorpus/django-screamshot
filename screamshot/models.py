@@ -1,4 +1,3 @@
-import django
 import imghdr
 import io
 from datetime import timedelta
