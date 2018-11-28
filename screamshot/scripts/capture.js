@@ -1,14 +1,23 @@
 var casper = require("casper").create({
-    colorizerType: 'Dummy',  // no colors
+    colorizerType: 'Dummy'  // no colors
 });
 
 
 function on_load_error(resource) {
     this.echo("ERROR: " + 'Cannot open ' + resource.url, "ERROR");
 }
+
+function on_load_error_404(resource) {
+    this.echo("ERROR: " + 'Cannot open ' + resource.url + " (404)", "ERROR");
+}
+
+function on_load_error_500(resource) {
+    this.echo("ERROR: " + 'Cannot open ' + resource.url + " (500)", "ERROR");
+}
+
 casper.on('load.failed', on_load_error);
-casper.on('http.status.404', on_load_error);
-casper.on('http.status.500', on_load_error);
+casper.on('http.status.404', on_load_error_404);
+casper.on('http.status.500', on_load_error_500);
 
 
 casper.on('remote.message', function on_page_message(msg) {
