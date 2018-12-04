@@ -1,30 +1,18 @@
-from django.utils.encoding import python_2_unicode_compatible
-import io
 import imghdr
+import io
+from datetime import timedelta
+from django.core.files.base import ContentFile
+from django.core.files.storage import FileSystemStorage
+from django.db import models
+from django.utils import timezone as timebase
+from django.utils.encoding import python_2_unicode_compatible
+from django.utils.translation import ugettext_lazy as _
 from hashlib import md5
 from tempfile import NamedTemporaryFile
 
-from django.db import models
-from django.core.files.base import ContentFile
-from django.core.files.storage import FileSystemStorage
-from django.utils.translation import ugettext_lazy as _
-
-try:
-    from django.utils import timezone as timebase
-except ImportError:
-    from datetime import datetime as timebase
-
 from screamshot.utils import casperjs_capture
-
-from .managers import WebPageScreenshotManager
 from . import app_settings
-import django
-
-if django.VERSION >= (1, 10):
-    from datetime import timedelta
-else:
-    from timedelta.fields import TimedeltaField
-
+from .managers import WebPageScreenshotManager
 
 SCREENSHOT_FORMAT = (
     ('html', 'html'),
@@ -62,14 +50,7 @@ class WebPageScreenshot(models.Model):
     """
     title = models.CharField(_("Title"), max_length=500)
     comment = models.TextField(_("Comment"), blank=True)
-    if django.VERSION >= (1, 10):
-        validity = models.PositiveIntegerField(_("Validity"), default=0, blank=True, null=True, help_text="maximum validity period in days.")
-    else:
-        validity = TimedeltaField(
-            _("Validity"),
-            blank=True,
-            null=True,
-            help_text="maximum validity period.")
+    validity = models.PositiveIntegerField(_("Validity"), default=0, blank=True, null=True, help_text="maximum validity period in days.")
     screenshot = models.ImageField(
         _("screenshot"),
         upload_to='screenshots/',
@@ -139,10 +120,7 @@ class WebPageScreenshot(models.Model):
         """Return True if screenshot is expired"""
         expired = False
         if self.validity and not self.never_update:
-            if django.VERSION >= (1, 10):
-                expired = timebase.now() > self.last_updated + timedelta(days=self.validity)
-            else:
-                expired = timebase.now() > self.last_updated + self.validity
+            expired = timebase.now() > self.last_updated + timedelta(days=self.validity)
         return expired
 
     def update_screenshot(self, save=True):
