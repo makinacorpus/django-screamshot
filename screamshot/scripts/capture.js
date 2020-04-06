@@ -56,8 +56,10 @@ else {
          width = casper.cli.options.width || 1400,
         height = casper.cli.options.height || 900,
        waitfor = casper.cli.options.waitfor,
-          wait = casper.cli.options.wait;
+          wait = casper.cli.options.wait,
+       timeout = casper.cli.options.timeout;
     casper.options.viewportSize = {width: width, height: height};
+    casper.options.waitTimeout = timeout;
 
     data = JSON.parse(data);
 

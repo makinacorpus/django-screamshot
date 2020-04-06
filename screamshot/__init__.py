@@ -11,4 +11,5 @@ app_settings = dict({
     'PHANTOMJS_CMD': None,
     'SCREAMSHOT_AS_INSTANCE': False,
     'TEST_CAPTURE_SCRIPT': True,
+    'TIMEOUT': 5000
 }, **getattr(settings, 'SCREAMSHOT_CONFIG', {}))
