@@ -24,6 +24,7 @@ class QuickDjangoTest(object):
         'django.contrib.contenttypes',
         'django.contrib.sessions',
         'django.contrib.admin',
+        'django.contrib.messages',
     )
 
     def __init__(self, *args, **kwargs):
@@ -52,7 +53,29 @@ class QuickDjangoTest(object):
                 'handlers': {'console': {'class': 'logging.StreamHandler', 'formatter': 'simple'}},
                 'loggers': {'screamshot': {'handlers': ['console'], 'level': 'DEBUG'}}
             },
-            INSTALLED_APPS = self.INSTALLED_APPS + self.apps
+            INSTALLED_APPS = self.INSTALLED_APPS + self.apps,
+            MIDDLEWARE=[
+                'django.contrib.sessions.middleware.SessionMiddleware',
+                'django.contrib.auth.middleware.AuthenticationMiddleware',
+                'django.contrib.messages.middleware.MessageMiddleware',
+            ],
+            TEMPLATES = [
+                {
+                    "BACKEND": "django.template.backends.django.DjangoTemplates",
+                    "DIRS": [os.path.join(self.DIRNAME, "templates")],
+                    "OPTIONS": {
+                        "context_processors": [
+                            "django.template.context_processors.debug",
+                            "django.template.context_processors.request",
+                            "django.contrib.auth.context_processors.auth",
+                            "django.template.context_processors.media",
+                            "django.template.context_processors.static",
+                            "django.template.context_processors.tz",
+                            "django.contrib.messages.context_processors.messages",
+                        ]
+                    },
+                },
+            ]
         )
 
         django.setup()
