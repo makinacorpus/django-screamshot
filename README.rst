@@ -271,6 +271,13 @@ If you have your own script which you would like to use, specify it in
         'CAPTURE_SCRIPT': '/home/you/scripts/capture.js',
     }
 
+You can add timeout corresponding to maximum time to wait for CSS3 selector (see waitfor option)
+
+::
+
+    SCREAMSHOT_CONFIG = {
+        'TIMEOUT': 7000 #ms 5000 by default,
+    }
 
 Notes about runserver
 ---------------------
