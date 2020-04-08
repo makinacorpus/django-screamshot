@@ -2,27 +2,27 @@
 CHANGELOG
 =========
 
-0.8.3 (2020-04-08)
-==================
+0.8.4 (2020-04-08)
+------------------
 
 * Add support Django 2, 2.1, 2.2
 * Add waittimeout settings
 
 
 0.8.2 (2018-07-04)
-==================
+------------------
 
 * Response errors status code from 400 to 500
 
 
 0.8.1 (2017-06-14)
-==================
+------------------
 
 * Fix phantom path in PATH
 
 
 0.8.1 (2017-05-05)
-==================
+------------------
 
 * Fix python 3 support
 * Add support for Django 1.11
@@ -30,7 +30,7 @@ CHANGELOG
 
 
 0.7.0 (2017-01-08)
-==================
+------------------
 
 * Support for rendering PDF
 * Python 3 support
@@ -39,14 +39,14 @@ CHANGELOG
 
 
 0.6.0 (2014-11-27)
-==================
+------------------
 
 * Added support of pure PhantomJS capture, i.e. without CasperJS, without selector (by Mateusz Mikolajczyk)
 * Support for capturing locally rendered templates, without external request (by Mateusz Mikolajczyk)
 
 
 0.5.0 (2014-11-11)
-==================
+------------------
 
 * Added screenshot model and adminsite support (by Luc Milland)
 * Allows to wait for a given time (milliseconds) before doing the screenshot (by Florent Lebreton)
@@ -54,7 +54,7 @@ CHANGELOG
 
 
 0.4.0 (2014-03-19)
-==================
+------------------
 
 * If URL not provided, use request's host (by Mozillag)
 * Allow to provide a custom PhantomJS command (by mo-mughrabi)
@@ -63,13 +63,13 @@ CHANGELOG
 
 
 0.3.1 (2014-01-31)
-==================
+------------------
 
 * Fix requirement spelling
 
 
 0.3.0 (2013-09-05)
-==================
+------------------
 
 * Return appropriate HTTP responses on parameter errors (400)
 * Better processing of capture errors, not for remote JS yet. (ref #1)
@@ -79,7 +79,7 @@ CHANGELOG
 
 
 0.2.0 (2013-08-18)
-==================
+------------------
 
 * CASPERJS_CMD setting to bypass PATH lookup
 * Query ``crop`` parameter to control resize
@@ -96,12 +96,12 @@ CHANGELOG
 
 
 0.1.1 (2012-04-17)
-==================
+------------------
 
 * Include package data
 
 
 0.1.0 (2012-04-17)
-==================
+------------------
 
 * Initial working version
