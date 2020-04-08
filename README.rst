@@ -42,6 +42,7 @@ INSTALL
 
 First make sure you have either the ``casperjs`` or ``phantomjs`` command in your ``PATH``, using
 related installation instructions:
+
  * `CasperJS <http://casperjs.org>`_.
  * `PhantomJS <http://phantomjs.org>`_.
 
