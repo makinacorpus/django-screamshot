@@ -7,7 +7,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 setup(
     name='django-screamshot',
-    version='0.8.4',
+    version='0.8.5.dev0',
     author='Mathieu Leplatre',
     author_email='contact@makina-corpus.com',
     url='https://github.com/makinacorpus/django-screamshot',
