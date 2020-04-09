@@ -27,3 +27,8 @@ script:
 after_success:
  - pip install coveralls
  - coveralls
+
+matrix:
+  exclude:
+    - python: 3.5
+      env: DJANGO_VERSION=3.0.*
