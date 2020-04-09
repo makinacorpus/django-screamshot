@@ -4,10 +4,12 @@ when you run "manage.py test".
 
 Replace this with more appropriate tests for your application.
 """
+from io import StringIO
 import os
 import mock
 
 from django.test import TestCase
+from django.urls import reverse
 
 from .utils import (process_casperjs_stdout, CaptureError, casperjs_capture,
                     logger as utils_logger)
@@ -38,6 +40,21 @@ class CaptureScriptTest(TestCase):
         casperjs_capture('/tmp/file.png', '%s/data/test_page.html' % here)
         utils_logger.error.assert_any_call(' Error: Ha ha')
 
-    def test_missing_selector_raises_exception(self):
+    def test_missing_selector_raises_exception(self,):
         self.assertRaises(CaptureError, casperjs_capture, '/tmp/file.png',
                           '%s/data/test_page.html' % here, selector='footer')
+
+
+class CaptureViewTest(TestCase):
+    def test_capture_no_url(self):
+        response = self.client.get(reverse('capture'))
+        self.assertContains(response, 'Missing url parameter', status_code=400)
+
+    def test_capture_wrong_url(self):
+        response = self.client.get(reverse('capture'), data={'url': "bad url"})
+        self.assertContains(response, "URL 'bad url' invalid (could not reverse)", status_code=400)
+
+    @mock.patch('screamshot.utils.casperjs_capture')
+    def test_capture(self, mock_capture):
+        response = self.client.get(reverse('capture'), data={'url': "http://t.com"})
+        self.assertEqual(response.status_code, 200)
