@@ -10,7 +10,6 @@ except ImportError:
     # Python 2
     from urlparse import urljoin
 
-from django.utils import six
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.validators import URLValidator
 from io import BytesIO
@@ -111,7 +110,7 @@ def casperjs_capture(stream, url, method=None, width=None, height=None,
     """
     Captures web pages using ``casperjs``
     """
-    if isinstance(stream, six.string_types):
+    if isinstance(stream, str):
         output = stream
     else:
         with NamedTemporaryFile('wb+', suffix='.%s' % render, delete=False) as f:
