@@ -39,7 +39,7 @@ class CaptureScriptTest(TestCase):
         casperjs_capture('/tmp/file.png', '%s/data/test_page.html' % here)
         utils_logger.error.assert_any_call(' Error: Ha ha')
 
-    def test_missing_selector_raises_exception(self,):
+    def test_missing_selector_raises_exception(self):
         self.assertRaises(CaptureError, casperjs_capture, '/tmp/file.png',
                           '%s/data/test_page.html' % here, selector='footer')
 
