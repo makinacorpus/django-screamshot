@@ -4,13 +4,8 @@ import subprocess
 from tempfile import NamedTemporaryFile
 import json
 from mimetypes import guess_type, guess_all_extensions
-try:
-    from urllib.parse import urljoin
-except ImportError:
-    # Python 2
-    from urlparse import urljoin
+from urllib.parse import urljoin
 
-from django.utils import six
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.validators import URLValidator
 from io import BytesIO
@@ -111,7 +106,7 @@ def casperjs_capture(stream, url, method=None, width=None, height=None,
     """
     Captures web pages using ``casperjs``
     """
-    if isinstance(stream, six.string_types):
+    if isinstance(stream, str):
         output = stream
     else:
         with NamedTemporaryFile('wb+', suffix='.%s' % render, delete=False) as f:

@@ -5,7 +5,6 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.utils import timezone as timebase
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from hashlib import md5
 from tempfile import NamedTemporaryFile
@@ -41,7 +40,6 @@ class OverwriteStorage(FileSystemStorage):
         return name
 
 
-@python_2_unicode_compatible
 class WebPageScreenshot(models.Model):
     """Straightforward implementation of screamshots as model objects.
     in additions to fields used for screamshot.utils.casperjs_capture

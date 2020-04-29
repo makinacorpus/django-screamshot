@@ -36,6 +36,7 @@ class QuickDjangoTest(object):
         Fire up the Django test suite
         """
         settings.configure(
+            ROOT_URLCONF = 'screamshot.urls',
             DEBUG = True,
             DATABASES = {
                 'default': {
