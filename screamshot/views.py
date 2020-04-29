@@ -1,10 +1,7 @@
 import base64
 import logging
 from io import BytesIO
-try:
-    from django.core.urlresolvers import NoReverseMatch
-except ImportError:
-    from django.urls import NoReverseMatch
+from django.urls import NoReverseMatch
 
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
 from django.utils.translation import ugettext as _
