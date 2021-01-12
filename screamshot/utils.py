@@ -201,6 +201,7 @@ def parse_url(request, url):
         validate = URLValidator()
         validate(url)
     except ValidationError:
+        logger.warning('url is not valid with UrlValidator : {url}')
         if url.startswith('/'):
             host = request.get_host()
             scheme = 'https' if request.is_secure() else 'http'
